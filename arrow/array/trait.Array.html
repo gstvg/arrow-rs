@@ -81,11 +81,14 @@ This defaults to <code>0</code>.</p>
 <span class="macro">assert_eq!</span>(array.offset(), <span class="number">0</span>);
 <span class="macro">assert_eq!</span>(array_slice.offset(), <span class="number">1</span>);</code></pre></div>
 </div></details><details class="toggle method-toggle" open><summary><section id="tymethod.nulls" class="method"><h4 class="code-header">fn <a href="#tymethod.nulls" class="fn">nulls</a>(&amp;self) -&gt; <a class="enum" href="https://doc.rust-lang.org/nightly/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;&amp;<a class="struct" href="../buffer/struct.NullBuffer.html" title="struct arrow::buffer::NullBuffer">NullBuffer</a>&gt;</h4></section></summary><div class="docblock"><p>Returns the null buffer of this array if any.</p>
-<p>The null buffer encodes the “physical” nulls of an array.
-However, some arrays can also encode nullability in their children, for example,
-<a href="struct.DictionaryArray.html#method.values" title="method arrow::array::DictionaryArray::values"><code>DictionaryArray::values</code></a> values or <a href="struct.RunArray.html#method.values" title="method arrow::array::RunArray::values"><code>RunArray::values</code></a>, or without a null buffer,
-such as <a href="struct.NullArray.html" title="struct arrow::array::NullArray"><code>NullArray</code></a>. To determine if each element of such an array is logically null,
-you can use the slower <a href="trait.Array.html#method.logical_nulls" title="method arrow::array::Array::logical_nulls"><code>Array::logical_nulls</code></a> to obtain a computed mask .</p>
+<p>The null buffer contains the “physical” nulls of an array, that is how
+the nulls are represented in the underlying arrow format.</p>
+<p>The physical representation is efficient, but is sometimes non intuitive
+for certain array types such as those with nullable child arrays like
+<a href="struct.DictionaryArray.html#method.values" title="method arrow::array::DictionaryArray::values"><code>DictionaryArray::values</code></a> or <a href="struct.RunArray.html#method.values" title="method arrow::array::RunArray::values"><code>RunArray::values</code></a>, or without a
+null buffer, such as <a href="struct.NullArray.html" title="struct arrow::array::NullArray"><code>NullArray</code></a>.</p>
+<p>To determine if each element of such an array is “logically” null,
+use the slower <a href="trait.Array.html#method.logical_nulls" title="method arrow::array::Array::logical_nulls"><code>Array::logical_nulls</code></a> to obtain a computed mask.</p>
 </div></details><details class="toggle method-toggle" open><summary><section id="tymethod.get_buffer_memory_size" class="method"><h4 class="code-header">fn <a href="#tymethod.get_buffer_memory_size" class="fn">get_buffer_memory_size</a>(&amp;self) -&gt; <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.usize.html">usize</a></h4></section></summary><div class="docblock"><p>Returns the total number of bytes of memory pointed to by this array.
 The buffers store bytes in the Arrow memory format, and include the data as well as the validity map.
 Note that this does not always correspond to the exact memory usage of an array,
@@ -93,15 +96,21 @@ since multiple arrays can share the same buffers or slices thereof.</p>
 </div></details><details class="toggle method-toggle" open><summary><section id="tymethod.get_array_memory_size" class="method"><h4 class="code-header">fn <a href="#tymethod.get_array_memory_size" class="fn">get_array_memory_size</a>(&amp;self) -&gt; <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.usize.html">usize</a></h4></section></summary><div class="docblock"><p>Returns the total number of bytes of memory occupied physically by this array.
 This value will always be greater than returned by <code>get_buffer_memory_size()</code> and
 includes the overhead of the data structures that contain the pointers to the various buffers.</p>
-</div></details></div><h2 id="provided-methods" class="section-header">Provided Methods<a href="#provided-methods" class="anchor">§</a></h2><div class="methods"><details class="toggle method-toggle" open><summary><section id="method.logical_nulls" class="method"><h4 class="code-header">fn <a href="#method.logical_nulls" class="fn">logical_nulls</a>(&amp;self) -&gt; <a class="enum" href="https://doc.rust-lang.org/nightly/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;<a class="struct" href="../buffer/struct.NullBuffer.html" title="struct arrow::buffer::NullBuffer">NullBuffer</a>&gt;</h4></section></summary><div class="docblock"><p>Returns a potentially computed <a href="../buffer/struct.NullBuffer.html" title="struct arrow::buffer::NullBuffer"><code>NullBuffer</code></a> that represent the logical null values of this array, if any.</p>
-<p>In most cases this will be the same as <a href="trait.Array.html#tymethod.nulls" title="method arrow::array::Array::nulls"><code>Array::nulls</code></a>, except for:</p>
+</div></details></div><h2 id="provided-methods" class="section-header">Provided Methods<a href="#provided-methods" class="anchor">§</a></h2><div class="methods"><details class="toggle method-toggle" open><summary><section id="method.logical_nulls" class="method"><h4 class="code-header">fn <a href="#method.logical_nulls" class="fn">logical_nulls</a>(&amp;self) -&gt; <a class="enum" href="https://doc.rust-lang.org/nightly/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;<a class="struct" href="../buffer/struct.NullBuffer.html" title="struct arrow::buffer::NullBuffer">NullBuffer</a>&gt;</h4></section></summary><div class="docblock"><p>Returns a potentially computed <a href="../buffer/struct.NullBuffer.html" title="struct arrow::buffer::NullBuffer"><code>NullBuffer</code></a> that represents the logical
+null values of this array, if any.</p>
+<p>Logical nulls represent the values that are null in the array,
+regardless of the underlying physical arrow representation.</p>
+<p>For most array types, this is equivalent to the “physical” nulls
+returned by <a href="trait.Array.html#tymethod.nulls" title="method arrow::array::Array::nulls"><code>Array::nulls</code></a>. It is different for the following cases, because which
+elements are null is not encoded in a single null buffer:</p>
 <ul>
 <li><a href="struct.DictionaryArray.html" title="struct arrow::array::DictionaryArray"><code>DictionaryArray</code></a> where <a href="struct.DictionaryArray.html#method.values" title="method arrow::array::DictionaryArray::values"><code>DictionaryArray::values</code></a> contains nulls</li>
 <li><a href="struct.RunArray.html" title="struct arrow::array::RunArray"><code>RunArray</code></a> where <a href="struct.RunArray.html#method.values" title="method arrow::array::RunArray::values"><code>RunArray::values</code></a> contains nulls</li>
 <li><a href="struct.NullArray.html" title="struct arrow::array::NullArray"><code>NullArray</code></a> where all indices are nulls</li>
 </ul>
-<p>In these cases a logical <a href="../buffer/struct.NullBuffer.html" title="struct arrow::buffer::NullBuffer"><code>NullBuffer</code></a> will be computed, encoding the logical nullability
-of these arrays, beyond what is encoded in <a href="trait.Array.html#tymethod.nulls" title="method arrow::array::Array::nulls"><code>Array::nulls</code></a></p>
+<p>In these cases a logical <a href="../buffer/struct.NullBuffer.html" title="struct arrow::buffer::NullBuffer"><code>NullBuffer</code></a> will be computed, encoding the
+logical nullability of these arrays, beyond what is encoded in
+<a href="trait.Array.html#tymethod.nulls" title="method arrow::array::Array::nulls"><code>Array::nulls</code></a></p>
 </div></details><details class="toggle method-toggle" open><summary><section id="method.is_null" class="method"><h4 class="code-header">fn <a href="#method.is_null" class="fn">is_null</a>(&amp;self, index: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.usize.html">usize</a>) -&gt; <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.bool.html">bool</a></h4></section></summary><div class="docblock"><p>Returns whether the element at <code>index</code> is null according to <a href="trait.Array.html#tymethod.nulls" title="method arrow::array::Array::nulls"><code>Array::nulls</code></a></p>
 <p>Note: For performance reasons, this method returns nullability solely as determined by the
 null buffer. This difference can lead to surprising results, for example, <a href="struct.NullArray.html#method.is_null" title="method arrow::array::NullArray::is_null"><code>NullArray::is_null</code></a> always
