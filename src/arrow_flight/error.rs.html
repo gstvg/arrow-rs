@@ -141,6 +141,13 @@
 <a href="#139" id="139">139</a>
 <a href="#140" id="140">140</a>
 <a href="#141" id="141">141</a>
+<a href="#142" id="142">142</a>
+<a href="#143" id="143">143</a>
+<a href="#144" id="144">144</a>
+<a href="#145" id="145">145</a>
+<a href="#146" id="146">146</a>
+<a href="#147" id="147">147</a>
+<a href="#148" id="148">148</a>
 </pre></div><pre class="rust"><code><span class="comment">// Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -192,18 +199,25 @@
 
 <span class="kw">impl </span>std::fmt::Display <span class="kw">for </span>FlightError {
     <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>std::fmt::Formatter&lt;<span class="lifetime">'_</span>&gt;) -&gt; std::fmt::Result {
-        <span class="comment">// TODO better format / error
-        </span><span class="macro">write!</span>(f, <span class="string">"{self:?}"</span>)
+        <span class="kw">match </span><span class="self">self </span>{
+            FlightError::Arrow(source) =&gt; <span class="macro">write!</span>(f, <span class="string">"Arrow error: {}"</span>, source),
+            FlightError::NotYetImplemented(desc) =&gt; <span class="macro">write!</span>(f, <span class="string">"Not yet implemented: {}"</span>, desc),
+            FlightError::Tonic(source) =&gt; <span class="macro">write!</span>(f, <span class="string">"Tonic error: {}"</span>, source),
+            FlightError::ProtocolError(desc) =&gt; <span class="macro">write!</span>(f, <span class="string">"Protocol error: {}"</span>, desc),
+            FlightError::DecodeError(desc) =&gt; <span class="macro">write!</span>(f, <span class="string">"Decode error: {}"</span>, desc),
+            FlightError::ExternalError(source) =&gt; <span class="macro">write!</span>(f, <span class="string">"External error: {}"</span>, source),
+        }
     }
 }
 
 <span class="kw">impl </span>Error <span class="kw">for </span>FlightError {
     <span class="kw">fn </span>source(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span>(<span class="kw">dyn </span>Error + <span class="lifetime">'static</span>)&gt; {
-        <span class="kw">if let </span><span class="self">Self</span>::ExternalError(e) = <span class="self">self </span>{
-            <span class="prelude-val">Some</span>(e.as_ref())
-        } <span class="kw">else </span>{
-            <span class="prelude-val">None
-        </span>}
+        <span class="kw">match </span><span class="self">self </span>{
+            FlightError::Arrow(source) =&gt; <span class="prelude-val">Some</span>(source),
+            FlightError::Tonic(source) =&gt; <span class="prelude-val">Some</span>(source),
+            FlightError::ExternalError(source) =&gt; <span class="prelude-val">Some</span>(source.as_ref()),
+            <span class="kw">_ </span>=&gt; <span class="prelude-val">None</span>,
+        }
     }
 }
 
