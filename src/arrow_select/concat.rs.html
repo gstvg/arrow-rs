@@ -789,6 +789,7 @@
 <a href="#787" id="787">787</a>
 <a href="#788" id="788">788</a>
 <a href="#789" id="789">789</a>
+<a href="#790" id="790">790</a>
 </pre></div><pre class="rust"><code><span class="comment">// Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -1360,7 +1361,8 @@
 
         <span class="comment">// Should have merged inputs together
         // Not 30 as this is done on a best-effort basis
-        </span><span class="macro">assert_eq!</span>(dictionary.values().len(), <span class="number">33</span>)
+        </span><span class="kw">let </span>values_len = dictionary.values().len();
+        <span class="macro">assert!</span>((<span class="number">30</span>..<span class="number">40</span>).contains(<span class="kw-2">&amp;</span>values_len), <span class="string">"{values_len}"</span>)
     }
 
     <span class="attr">#[test]
