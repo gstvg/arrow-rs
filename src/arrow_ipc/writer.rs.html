@@ -3675,7 +3675,7 @@
     <span class="kw">use super</span>::<span class="kw-2">*</span>;
 
     <span class="kw">fn </span>serialize_file(rb: <span class="kw-2">&amp;</span>RecordBatch) -&gt; Vec&lt;u8&gt; {
-        <span class="kw">let </span><span class="kw-2">mut </span>writer = FileWriter::try_new(<span class="macro">vec!</span>[], <span class="kw-2">&amp;</span>rb.schema()).unwrap();
+        <span class="kw">let </span><span class="kw-2">mut </span>writer = FileWriter::try_new(<span class="macro">vec!</span>[], rb.schema_ref()).unwrap();
         writer.write(rb).unwrap();
         writer.finish().unwrap();
         writer.into_inner().unwrap()
@@ -3687,7 +3687,7 @@
     }
 
     <span class="kw">fn </span>serialize_stream(record: <span class="kw-2">&amp;</span>RecordBatch) -&gt; Vec&lt;u8&gt; {
-        <span class="kw">let </span><span class="kw-2">mut </span>stream_writer = StreamWriter::try_new(<span class="macro">vec!</span>[], <span class="kw-2">&amp;</span>record.schema()).unwrap();
+        <span class="kw">let </span><span class="kw-2">mut </span>stream_writer = StreamWriter::try_new(<span class="macro">vec!</span>[], record.schema_ref()).unwrap();
         stream_writer.write(record).unwrap();
         stream_writer.finish().unwrap();
         stream_writer.into_inner().unwrap()
@@ -4221,7 +4221,7 @@
         )
         .expect(<span class="string">"new batch"</span>);
 
-        <span class="kw">let </span><span class="kw-2">mut </span>writer = StreamWriter::try_new(<span class="macro">vec!</span>[], <span class="kw-2">&amp;</span>batch.schema()).expect(<span class="string">"new writer"</span>);
+        <span class="kw">let </span><span class="kw-2">mut </span>writer = StreamWriter::try_new(<span class="macro">vec!</span>[], batch.schema_ref()).expect(<span class="string">"new writer"</span>);
         writer.write(<span class="kw-2">&amp;</span>batch).expect(<span class="string">"write"</span>);
         <span class="kw">let </span>outbuf = writer.into_inner().expect(<span class="string">"inner"</span>);
 

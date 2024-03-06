@@ -1309,7 +1309,7 @@
         <span class="kw">let </span>schema = <span class="kw">match </span><span class="kw-2">&amp;</span><span class="self">self</span>.schema {
             <span class="prelude-val">Some</span>(schema) =&gt; schema.clone(),
             <span class="comment">// encode the schema if this is the first time we have seen it
-            </span><span class="prelude-val">None </span>=&gt; <span class="self">self</span>.encode_schema(<span class="kw-2">&amp;</span>batch.schema()),
+            </span><span class="prelude-val">None </span>=&gt; <span class="self">self</span>.encode_schema(batch.schema_ref()),
         };
 
         <span class="comment">// encode the batch
@@ -1554,12 +1554,12 @@
 
         <span class="kw">let </span>batch = RecordBatch::try_from_iter(<span class="macro">vec!</span>[(<span class="string">"a"</span>, Arc::new(c1) <span class="kw">as </span>ArrayRef)])
             .expect(<span class="string">"cannot create record batch"</span>);
-        <span class="kw">let </span>schema = batch.schema();
+        <span class="kw">let </span>schema = batch.schema_ref();
 
         <span class="kw">let </span>(<span class="kw">_</span>, baseline_flight_batch) = make_flight_data(<span class="kw-2">&amp;</span>batch, <span class="kw-2">&amp;</span>options);
 
         <span class="kw">let </span>big_batch = batch.slice(<span class="number">0</span>, batch.num_rows() - <span class="number">1</span>);
-        <span class="kw">let </span>optimized_big_batch = prepare_batch_for_flight(<span class="kw-2">&amp;</span>big_batch, Arc::clone(<span class="kw-2">&amp;</span>schema), <span class="bool-val">false</span>)
+        <span class="kw">let </span>optimized_big_batch = prepare_batch_for_flight(<span class="kw-2">&amp;</span>big_batch, Arc::clone(schema), <span class="bool-val">false</span>)
             .expect(<span class="string">"failed to optimize"</span>);
         <span class="kw">let </span>(<span class="kw">_</span>, optimized_big_flight_batch) = make_flight_data(<span class="kw-2">&amp;</span>optimized_big_batch, <span class="kw-2">&amp;</span>options);
 
@@ -1570,7 +1570,7 @@
 
         <span class="kw">let </span>small_batch = batch.slice(<span class="number">0</span>, <span class="number">1</span>);
         <span class="kw">let </span>optimized_small_batch =
-            prepare_batch_for_flight(<span class="kw-2">&amp;</span>small_batch, Arc::clone(<span class="kw-2">&amp;</span>schema), <span class="bool-val">false</span>)
+            prepare_batch_for_flight(<span class="kw-2">&amp;</span>small_batch, Arc::clone(schema), <span class="bool-val">false</span>)
                 .expect(<span class="string">"failed to optimize"</span>);
         <span class="kw">let </span>(<span class="kw">_</span>, optimized_small_flight_batch) = make_flight_data(<span class="kw-2">&amp;</span>optimized_small_batch, <span class="kw-2">&amp;</span>options);
 

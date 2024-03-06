@@ -3289,7 +3289,7 @@
 
     <span class="kw">fn </span>roundtrip_ipc(rb: <span class="kw-2">&amp;</span>RecordBatch) -&gt; RecordBatch {
         <span class="kw">let </span><span class="kw-2">mut </span>buf = Vec::new();
-        <span class="kw">let </span><span class="kw-2">mut </span>writer = <span class="kw">crate</span>::writer::FileWriter::try_new(<span class="kw-2">&amp;mut </span>buf, <span class="kw-2">&amp;</span>rb.schema()).unwrap();
+        <span class="kw">let </span><span class="kw-2">mut </span>writer = <span class="kw">crate</span>::writer::FileWriter::try_new(<span class="kw-2">&amp;mut </span>buf, rb.schema_ref()).unwrap();
         writer.write(rb).unwrap();
         writer.finish().unwrap();
         drop(writer);
@@ -3300,7 +3300,7 @@
 
     <span class="kw">fn </span>roundtrip_ipc_stream(rb: <span class="kw-2">&amp;</span>RecordBatch) -&gt; RecordBatch {
         <span class="kw">let </span><span class="kw-2">mut </span>buf = Vec::new();
-        <span class="kw">let </span><span class="kw-2">mut </span>writer = <span class="kw">crate</span>::writer::StreamWriter::try_new(<span class="kw-2">&amp;mut </span>buf, <span class="kw-2">&amp;</span>rb.schema()).unwrap();
+        <span class="kw">let </span><span class="kw-2">mut </span>writer = <span class="kw">crate</span>::writer::StreamWriter::try_new(<span class="kw-2">&amp;mut </span>buf, rb.schema_ref()).unwrap();
         writer.write(rb).unwrap();
         writer.finish().unwrap();
         drop(writer);
@@ -3675,7 +3675,7 @@
         <span class="kw">let </span>batch = RecordBatch::new_empty(schema);
 
         <span class="kw">let </span><span class="kw-2">mut </span>buf = Vec::new();
-        <span class="kw">let </span><span class="kw-2">mut </span>writer = <span class="kw">crate</span>::writer::FileWriter::try_new(<span class="kw-2">&amp;mut </span>buf, <span class="kw-2">&amp;</span>batch.schema()).unwrap();
+        <span class="kw">let </span><span class="kw-2">mut </span>writer = <span class="kw">crate</span>::writer::FileWriter::try_new(<span class="kw-2">&amp;mut </span>buf, batch.schema_ref()).unwrap();
         writer.write(<span class="kw-2">&amp;</span>batch).unwrap();
         writer.finish().unwrap();
         drop(writer);
@@ -3702,7 +3702,7 @@
         <span class="kw">let </span>batch = RecordBatch::new_empty(schema);
 
         <span class="kw">let </span><span class="kw-2">mut </span>buf = Vec::new();
-        <span class="kw">let </span><span class="kw-2">mut </span>writer = <span class="kw">crate</span>::writer::FileWriter::try_new(<span class="kw-2">&amp;mut </span>buf, <span class="kw-2">&amp;</span>batch.schema()).unwrap();
+        <span class="kw">let </span><span class="kw-2">mut </span>writer = <span class="kw">crate</span>::writer::FileWriter::try_new(<span class="kw-2">&amp;mut </span>buf, batch.schema_ref()).unwrap();
         writer.write(<span class="kw-2">&amp;</span>batch).unwrap();
         writer.finish().unwrap();
         drop(writer);
