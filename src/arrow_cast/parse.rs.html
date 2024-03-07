@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `arrow-cast/src/parse.rs`."><title>parse.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-e935ef01ae1c1829.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="arrow_cast" data-themes="" data-resource-suffix="" data-rustdoc-version="1.78.0-nightly (b6d2d841b 2024-03-05)" data-channel="nightly" data-search-js="search-dd67cee4cfa65049.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-4c98445ec4002617.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-12cf3b4f4f9dc36d.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `arrow-cast/src/parse.rs`."><title>parse.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-e935ef01ae1c1829.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="arrow_cast" data-themes="" data-resource-suffix="" data-rustdoc-version="1.78.0-nightly (7d3702e47 2024-03-06)" data-channel="nightly" data-search-js="search-dd67cee4cfa65049.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-4c98445ec4002617.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-12cf3b4f4f9dc36d.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
             <h2>Files</h2></div></nav><div class="sidebar-resizer"></div>
     <main><nav class="sub"><form class="search-form"><span></span><div id="sidebar-button" tabindex="-1"><a href="../../arrow_cast/all.html" title="show sidebar"></a></div><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
@@ -2304,6 +2304,9 @@
 <a href="#2302" id="2302">2302</a>
 <a href="#2303" id="2303">2303</a>
 <a href="#2304" id="2304">2304</a>
+<a href="#2305" id="2305">2305</a>
+<a href="#2306" id="2306">2306</a>
+<a href="#2307" id="2307">2307</a>
 </pre></div><pre class="rust"><code><span class="comment">// Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -2579,7 +2582,8 @@
 <span class="doccomment">/// Fallible conversion of [`NaiveDateTime`] to `i64` nanoseconds
 </span><span class="attr">#[inline]
 </span><span class="kw">fn </span>to_timestamp_nanos(dt: NaiveDateTime) -&gt; <span class="prelude-ty">Result</span>&lt;i64, ArrowError&gt; {
-    dt.timestamp_nanos_opt()
+    dt.and_utc()
+        .timestamp_nanos_opt()
         .ok_or_else(|| ArrowError::ParseError(ERR_NANOSECONDS_NOT_SUPPORTED.to_string()))
 }
 
@@ -2938,8 +2942,8 @@
 <span class="kw">impl </span>Parser <span class="kw">for </span>Date64Type {
     <span class="kw">fn </span>parse(string: <span class="kw-2">&amp;</span>str) -&gt; <span class="prelude-ty">Option</span>&lt;i64&gt; {
         <span class="kw">if </span>string.len() &lt;= <span class="number">10 </span>{
-            <span class="kw">let </span>date = parse_date(string)<span class="question-mark">?</span>;
-            <span class="prelude-val">Some</span>(NaiveDateTime::new(date, NaiveTime::default()).timestamp_millis())
+            <span class="kw">let </span>datetime = NaiveDateTime::new(parse_date(string)<span class="question-mark">?</span>, NaiveTime::default());
+            <span class="prelude-val">Some</span>(datetime.and_utc().timestamp_millis())
         } <span class="kw">else </span>{
             <span class="kw">let </span>date_time = string_to_datetime(<span class="kw-2">&amp;</span>Utc, string).ok()<span class="question-mark">?</span>;
             <span class="prelude-val">Some</span>(date_time.timestamp_millis())
@@ -2968,7 +2972,7 @@
             <span class="prelude-val">Some</span>(date_time.timestamp_millis())
         } <span class="kw">else </span>{
             <span class="kw">let </span>date_time = NaiveDateTime::parse_from_str(string, format).ok()<span class="question-mark">?</span>;
-            <span class="prelude-val">Some</span>(date_time.timestamp_millis())
+            <span class="prelude-val">Some</span>(date_time.and_utc().timestamp_millis())
         }
     }
 }
@@ -3592,43 +3596,45 @@
 
         <span class="comment">// Ensure both T and ' ' variants work
         </span><span class="macro">assert_eq!</span>(
-            naive_datetime.timestamp_nanos_opt().unwrap(),
+            naive_datetime.and_utc().timestamp_nanos_opt().unwrap(),
             parse_timestamp(<span class="string">"2020-09-08T13:42:29.190855"</span>).unwrap()
         );
 
         <span class="macro">assert_eq!</span>(
-            naive_datetime.timestamp_nanos_opt().unwrap(),
+            naive_datetime.and_utc().timestamp_nanos_opt().unwrap(),
             parse_timestamp(<span class="string">"2020-09-08 13:42:29.190855"</span>).unwrap()
         );
 
         <span class="comment">// Also ensure that parsing timestamps with no fractional
         // second part works as well
-        </span><span class="kw">let </span>naive_datetime_whole_secs = NaiveDateTime::new(
+        </span><span class="kw">let </span>datetime_whole_secs = NaiveDateTime::new(
             NaiveDate::from_ymd_opt(<span class="number">2020</span>, <span class="number">9</span>, <span class="number">8</span>).unwrap(),
             NaiveTime::from_hms_opt(<span class="number">13</span>, <span class="number">42</span>, <span class="number">29</span>).unwrap(),
-        );
+        )
+        .and_utc();
 
         <span class="comment">// Ensure both T and ' ' variants work
         </span><span class="macro">assert_eq!</span>(
-            naive_datetime_whole_secs.timestamp_nanos_opt().unwrap(),
+            datetime_whole_secs.timestamp_nanos_opt().unwrap(),
             parse_timestamp(<span class="string">"2020-09-08T13:42:29"</span>).unwrap()
         );
 
         <span class="macro">assert_eq!</span>(
-            naive_datetime_whole_secs.timestamp_nanos_opt().unwrap(),
+            datetime_whole_secs.timestamp_nanos_opt().unwrap(),
             parse_timestamp(<span class="string">"2020-09-08 13:42:29"</span>).unwrap()
         );
 
         <span class="comment">// ensure without time work
         // no time, should be the nano second at
         // 2020-09-08 0:0:0
-        </span><span class="kw">let </span>naive_datetime_no_time = NaiveDateTime::new(
+        </span><span class="kw">let </span>datetime_no_time = NaiveDateTime::new(
             NaiveDate::from_ymd_opt(<span class="number">2020</span>, <span class="number">9</span>, <span class="number">8</span>).unwrap(),
             NaiveTime::from_hms_opt(<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>).unwrap(),
-        );
+        )
+        .and_utc();
 
         <span class="macro">assert_eq!</span>(
-            naive_datetime_no_time.timestamp_nanos_opt().unwrap(),
+            datetime_no_time.timestamp_nanos_opt().unwrap(),
             parse_timestamp(<span class="string">"2020-09-08"</span>).unwrap()
         )
     }
@@ -3740,12 +3746,12 @@
 
         <span class="comment">// Ensure both T and ' ' variants work
         </span><span class="macro">assert_eq!</span>(
-            naive_datetime.timestamp_nanos_opt().unwrap(),
+            naive_datetime.and_utc().timestamp_nanos_opt().unwrap(),
             parse_timestamp(<span class="string">"2020-09-08T13:42:29.190855"</span>).unwrap()
         );
 
         <span class="macro">assert_eq!</span>(
-            naive_datetime.timestamp_nanos_opt().unwrap(),
+            naive_datetime.and_utc().timestamp_nanos_opt().unwrap(),
             parse_timestamp(<span class="string">"2020-09-08 13:42:29.190855"</span>).unwrap()
         );
 
@@ -3756,12 +3762,12 @@
 
         <span class="comment">// Ensure both T and ' ' variants work
         </span><span class="macro">assert_eq!</span>(
-            naive_datetime.timestamp_nanos_opt().unwrap(),
+            naive_datetime.and_utc().timestamp_nanos_opt().unwrap(),
             parse_timestamp(<span class="string">"2020-09-08T13:42:29"</span>).unwrap()
         );
 
         <span class="macro">assert_eq!</span>(
-            naive_datetime.timestamp_nanos_opt().unwrap(),
+            naive_datetime.and_utc().timestamp_nanos_opt().unwrap(),
             parse_timestamp(<span class="string">"2020-09-08 13:42:29"</span>).unwrap()
         );
 

@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `arrow-array/src/types.rs`."><title>types.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-e935ef01ae1c1829.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="arrow_array" data-themes="" data-resource-suffix="" data-rustdoc-version="1.78.0-nightly (b6d2d841b 2024-03-05)" data-channel="nightly" data-search-js="search-dd67cee4cfa65049.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-4c98445ec4002617.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-12cf3b4f4f9dc36d.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `arrow-array/src/types.rs`."><title>types.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-e935ef01ae1c1829.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="arrow_array" data-themes="" data-resource-suffix="" data-rustdoc-version="1.78.0-nightly (7d3702e47 2024-03-06)" data-channel="nightly" data-search-js="search-dd67cee4cfa65049.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-4c98445ec4002617.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-12cf3b4f4f9dc36d.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
             <h2>Files</h2></div></nav><div class="sidebar-resizer"></div>
     <main><nav class="sub"><form class="search-form"><span></span><div id="sidebar-button" tabindex="-1"><a href="../../arrow_array/all.html" title="show sidebar"></a></div><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
@@ -1634,6 +1634,9 @@
 <a href="#1632" id="1632">1632</a>
 <a href="#1633" id="1633">1633</a>
 <a href="#1634" id="1634">1634</a>
+<a href="#1635" id="1635">1635</a>
+<a href="#1636" id="1636">1636</a>
+<a href="#1637" id="1637">1637</a>
 </pre></div><pre class="rust"><code><span class="comment">// Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -2026,31 +2029,34 @@ is larger than the binary representation of 100 days.
     <span class="kw">const </span>UNIT: TimeUnit = TimeUnit::Second;
 
     <span class="kw">fn </span>make_value(naive: NaiveDateTime) -&gt; <span class="prelude-ty">Option</span>&lt;i64&gt; {
-        <span class="prelude-val">Some</span>(naive.timestamp())
+        <span class="prelude-val">Some</span>(naive.and_utc().timestamp())
     }
 }
 <span class="kw">impl </span>ArrowTimestampType <span class="kw">for </span>TimestampMillisecondType {
     <span class="kw">const </span>UNIT: TimeUnit = TimeUnit::Millisecond;
 
     <span class="kw">fn </span>make_value(naive: NaiveDateTime) -&gt; <span class="prelude-ty">Option</span>&lt;i64&gt; {
-        <span class="kw">let </span>millis = naive.timestamp().checked_mul(<span class="number">1_000</span>)<span class="question-mark">?</span>;
-        millis.checked_add(naive.timestamp_subsec_millis() <span class="kw">as </span>i64)
+        <span class="kw">let </span>utc = naive.and_utc();
+        <span class="kw">let </span>millis = utc.timestamp().checked_mul(<span class="number">1_000</span>)<span class="question-mark">?</span>;
+        millis.checked_add(utc.timestamp_subsec_millis() <span class="kw">as </span>i64)
     }
 }
 <span class="kw">impl </span>ArrowTimestampType <span class="kw">for </span>TimestampMicrosecondType {
     <span class="kw">const </span>UNIT: TimeUnit = TimeUnit::Microsecond;
 
     <span class="kw">fn </span>make_value(naive: NaiveDateTime) -&gt; <span class="prelude-ty">Option</span>&lt;i64&gt; {
-        <span class="kw">let </span>micros = naive.timestamp().checked_mul(<span class="number">1_000_000</span>)<span class="question-mark">?</span>;
-        micros.checked_add(naive.timestamp_subsec_micros() <span class="kw">as </span>i64)
+        <span class="kw">let </span>utc = naive.and_utc();
+        <span class="kw">let </span>micros = utc.timestamp().checked_mul(<span class="number">1_000_000</span>)<span class="question-mark">?</span>;
+        micros.checked_add(utc.timestamp_subsec_micros() <span class="kw">as </span>i64)
     }
 }
 <span class="kw">impl </span>ArrowTimestampType <span class="kw">for </span>TimestampNanosecondType {
     <span class="kw">const </span>UNIT: TimeUnit = TimeUnit::Nanosecond;
 
     <span class="kw">fn </span>make_value(naive: NaiveDateTime) -&gt; <span class="prelude-ty">Option</span>&lt;i64&gt; {
-        <span class="kw">let </span>nanos = naive.timestamp().checked_mul(<span class="number">1_000_000_000</span>)<span class="question-mark">?</span>;
-        nanos.checked_add(naive.timestamp_subsec_nanos() <span class="kw">as </span>i64)
+        <span class="kw">let </span>utc = naive.and_utc();
+        <span class="kw">let </span>nanos = utc.timestamp().checked_mul(<span class="number">1_000_000_000</span>)<span class="question-mark">?</span>;
+        nanos.checked_add(utc.timestamp_subsec_nanos() <span class="kw">as </span>i64)
     }
 }
 
@@ -2074,7 +2080,7 @@ is larger than the binary representation of 100 days.
     <span class="kw">let </span>(days, ms) = IntervalDayTimeType::to_parts(delta);
     <span class="kw">let </span>res = as_datetime_with_timezone::&lt;T&gt;(timestamp, tz)<span class="question-mark">?</span>;
     <span class="kw">let </span>res = add_days_datetime(res, days)<span class="question-mark">?</span>;
-    <span class="kw">let </span>res = res.checked_add_signed(Duration::milliseconds(ms <span class="kw">as </span>i64))<span class="question-mark">?</span>;
+    <span class="kw">let </span>res = res.checked_add_signed(Duration::try_milliseconds(ms <span class="kw">as </span>i64)<span class="question-mark">?</span>)<span class="question-mark">?</span>;
     <span class="kw">let </span>res = res.naive_utc();
     T::make_value(res)
 }
@@ -2113,7 +2119,7 @@ is larger than the binary representation of 100 days.
     <span class="kw">let </span>(days, ms) = IntervalDayTimeType::to_parts(delta);
     <span class="kw">let </span>res = as_datetime_with_timezone::&lt;T&gt;(timestamp, tz)<span class="question-mark">?</span>;
     <span class="kw">let </span>res = sub_days_datetime(res, days)<span class="question-mark">?</span>;
-    <span class="kw">let </span>res = res.checked_sub_signed(Duration::milliseconds(ms <span class="kw">as </span>i64))<span class="question-mark">?</span>;
+    <span class="kw">let </span>res = res.checked_sub_signed(Duration::try_milliseconds(ms <span class="kw">as </span>i64)<span class="question-mark">?</span>)<span class="question-mark">?</span>;
     <span class="kw">let </span>res = res.naive_utc();
     T::make_value(res)
 }
@@ -2637,7 +2643,7 @@ is larger than the binary representation of 100 days.
     /// * `i` - The Date32Type to convert
     </span><span class="kw">pub fn </span>to_naive_date(i: &lt;Date32Type <span class="kw">as </span>ArrowPrimitiveType&gt;::Native) -&gt; NaiveDate {
         <span class="kw">let </span>epoch = NaiveDate::from_ymd_opt(<span class="number">1970</span>, <span class="number">1</span>, <span class="number">1</span>).unwrap();
-        epoch.add(Duration::days(i <span class="kw">as </span>i64))
+        epoch.add(Duration::try_days(i <span class="kw">as </span>i64).unwrap())
     }
 
     <span class="doccomment">/// Converts a chrono::NaiveDate into an arrow Date32Type
@@ -2678,8 +2684,8 @@ is larger than the binary representation of 100 days.
     ) -&gt; &lt;Date32Type <span class="kw">as </span>ArrowPrimitiveType&gt;::Native {
         <span class="kw">let </span>(days, ms) = IntervalDayTimeType::to_parts(delta);
         <span class="kw">let </span>res = Date32Type::to_naive_date(date);
-        <span class="kw">let </span>res = res.add(Duration::days(days <span class="kw">as </span>i64));
-        <span class="kw">let </span>res = res.add(Duration::milliseconds(ms <span class="kw">as </span>i64));
+        <span class="kw">let </span>res = res.add(Duration::try_days(days <span class="kw">as </span>i64).unwrap());
+        <span class="kw">let </span>res = res.add(Duration::try_milliseconds(ms <span class="kw">as </span>i64).unwrap());
         Date32Type::from_naive_date(res)
     }
 
@@ -2696,7 +2702,7 @@ is larger than the binary representation of 100 days.
         <span class="kw">let </span>(months, days, nanos) = IntervalMonthDayNanoType::to_parts(delta);
         <span class="kw">let </span>res = Date32Type::to_naive_date(date);
         <span class="kw">let </span>res = shift_months(res, months);
-        <span class="kw">let </span>res = res.add(Duration::days(days <span class="kw">as </span>i64));
+        <span class="kw">let </span>res = res.add(Duration::try_days(days <span class="kw">as </span>i64).unwrap());
         <span class="kw">let </span>res = res.add(Duration::nanoseconds(nanos));
         Date32Type::from_naive_date(res)
     }
@@ -2729,8 +2735,8 @@ is larger than the binary representation of 100 days.
     ) -&gt; &lt;Date32Type <span class="kw">as </span>ArrowPrimitiveType&gt;::Native {
         <span class="kw">let </span>(days, ms) = IntervalDayTimeType::to_parts(delta);
         <span class="kw">let </span>res = Date32Type::to_naive_date(date);
-        <span class="kw">let </span>res = res.sub(Duration::days(days <span class="kw">as </span>i64));
-        <span class="kw">let </span>res = res.sub(Duration::milliseconds(ms <span class="kw">as </span>i64));
+        <span class="kw">let </span>res = res.sub(Duration::try_days(days <span class="kw">as </span>i64).unwrap());
+        <span class="kw">let </span>res = res.sub(Duration::try_milliseconds(ms <span class="kw">as </span>i64).unwrap());
         Date32Type::from_naive_date(res)
     }
 
@@ -2747,7 +2753,7 @@ is larger than the binary representation of 100 days.
         <span class="kw">let </span>(months, days, nanos) = IntervalMonthDayNanoType::to_parts(delta);
         <span class="kw">let </span>res = Date32Type::to_naive_date(date);
         <span class="kw">let </span>res = shift_months(res, -months);
-        <span class="kw">let </span>res = res.sub(Duration::days(days <span class="kw">as </span>i64));
+        <span class="kw">let </span>res = res.sub(Duration::try_days(days <span class="kw">as </span>i64).unwrap());
         <span class="kw">let </span>res = res.sub(Duration::nanoseconds(nanos));
         Date32Type::from_naive_date(res)
     }
@@ -2761,7 +2767,7 @@ is larger than the binary representation of 100 days.
     /// * `i` - The Date64Type to convert
     </span><span class="kw">pub fn </span>to_naive_date(i: &lt;Date64Type <span class="kw">as </span>ArrowPrimitiveType&gt;::Native) -&gt; NaiveDate {
         <span class="kw">let </span>epoch = NaiveDate::from_ymd_opt(<span class="number">1970</span>, <span class="number">1</span>, <span class="number">1</span>).unwrap();
-        epoch.add(Duration::milliseconds(i))
+        epoch.add(Duration::try_milliseconds(i).unwrap())
     }
 
     <span class="doccomment">/// Converts a chrono::NaiveDate into an arrow Date64Type
@@ -2802,8 +2808,8 @@ is larger than the binary representation of 100 days.
     ) -&gt; &lt;Date64Type <span class="kw">as </span>ArrowPrimitiveType&gt;::Native {
         <span class="kw">let </span>(days, ms) = IntervalDayTimeType::to_parts(delta);
         <span class="kw">let </span>res = Date64Type::to_naive_date(date);
-        <span class="kw">let </span>res = res.add(Duration::days(days <span class="kw">as </span>i64));
-        <span class="kw">let </span>res = res.add(Duration::milliseconds(ms <span class="kw">as </span>i64));
+        <span class="kw">let </span>res = res.add(Duration::try_days(days <span class="kw">as </span>i64).unwrap());
+        <span class="kw">let </span>res = res.add(Duration::try_milliseconds(ms <span class="kw">as </span>i64).unwrap());
         Date64Type::from_naive_date(res)
     }
 
@@ -2820,7 +2826,7 @@ is larger than the binary representation of 100 days.
         <span class="kw">let </span>(months, days, nanos) = IntervalMonthDayNanoType::to_parts(delta);
         <span class="kw">let </span>res = Date64Type::to_naive_date(date);
         <span class="kw">let </span>res = shift_months(res, months);
-        <span class="kw">let </span>res = res.add(Duration::days(days <span class="kw">as </span>i64));
+        <span class="kw">let </span>res = res.add(Duration::try_days(days <span class="kw">as </span>i64).unwrap());
         <span class="kw">let </span>res = res.add(Duration::nanoseconds(nanos));
         Date64Type::from_naive_date(res)
     }
@@ -2853,8 +2859,8 @@ is larger than the binary representation of 100 days.
     ) -&gt; &lt;Date64Type <span class="kw">as </span>ArrowPrimitiveType&gt;::Native {
         <span class="kw">let </span>(days, ms) = IntervalDayTimeType::to_parts(delta);
         <span class="kw">let </span>res = Date64Type::to_naive_date(date);
-        <span class="kw">let </span>res = res.sub(Duration::days(days <span class="kw">as </span>i64));
-        <span class="kw">let </span>res = res.sub(Duration::milliseconds(ms <span class="kw">as </span>i64));
+        <span class="kw">let </span>res = res.sub(Duration::try_days(days <span class="kw">as </span>i64).unwrap());
+        <span class="kw">let </span>res = res.sub(Duration::try_milliseconds(ms <span class="kw">as </span>i64).unwrap());
         Date64Type::from_naive_date(res)
     }
 
@@ -2871,7 +2877,7 @@ is larger than the binary representation of 100 days.
         <span class="kw">let </span>(months, days, nanos) = IntervalMonthDayNanoType::to_parts(delta);
         <span class="kw">let </span>res = Date64Type::to_naive_date(date);
         <span class="kw">let </span>res = shift_months(res, -months);
-        <span class="kw">let </span>res = res.sub(Duration::days(days <span class="kw">as </span>i64));
+        <span class="kw">let </span>res = res.sub(Duration::try_days(days <span class="kw">as </span>i64).unwrap());
         <span class="kw">let </span>res = res.sub(Duration::nanoseconds(nanos));
         Date64Type::from_naive_date(res)
     }
