@@ -646,6 +646,9 @@
 <a href="#644" id="644">644</a>
 <a href="#645" id="645">645</a>
 <a href="#646" id="646">646</a>
+<a href="#647" id="647">647</a>
+<a href="#648" id="648">648</a>
+<a href="#649" id="649">649</a>
 </pre></div><pre class="rust"><code><span class="comment">// Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -819,11 +822,11 @@
         }
         DataType::List(field) =&gt; {
             <span class="kw">let </span>builder = make_builder(field.data_type(), capacity);
-            Box::new(ListBuilder::with_capacity(builder, capacity))
+            Box::new(ListBuilder::with_capacity(builder, capacity).with_field(field.clone()))
         }
         DataType::LargeList(field) =&gt; {
             <span class="kw">let </span>builder = make_builder(field.data_type(), capacity);
-            Box::new(LargeListBuilder::with_capacity(builder, capacity))
+            Box::new(LargeListBuilder::with_capacity(builder, capacity).with_field(field.clone()))
         }
         DataType::Map(field, <span class="kw">_</span>) =&gt; <span class="kw">match </span>field.data_type() {
             DataType::Struct(fields) =&gt; {
@@ -834,12 +837,15 @@
                 };
                 <span class="kw">let </span>key_builder = make_builder(fields[<span class="number">0</span>].data_type(), capacity);
                 <span class="kw">let </span>value_builder = make_builder(fields[<span class="number">1</span>].data_type(), capacity);
-                Box::new(MapBuilder::with_capacity(
-                    <span class="prelude-val">Some</span>(map_field_names),
-                    key_builder,
-                    value_builder,
-                    capacity,
-                ))
+                Box::new(
+                    MapBuilder::with_capacity(
+                        <span class="prelude-val">Some</span>(map_field_names),
+                        key_builder,
+                        value_builder,
+                        capacity,
+                    )
+                    .with_values_field(fields[<span class="number">1</span>].clone()),
+                )
             }
             t =&gt; <span class="macro">panic!</span>(<span class="string">"The field of Map data type {t:?} should has a child Struct field"</span>),
         },
