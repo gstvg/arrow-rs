@@ -110,6 +110,10 @@
 <a href="#108" id="108">108</a>
 <a href="#109" id="109">109</a>
 <a href="#110" id="110">110</a>
+<a href="#111" id="111">111</a>
+<a href="#112" id="112">112</a>
+<a href="#113" id="113">113</a>
+<a href="#114" id="114">114</a>
 </pre></div><pre class="rust"><code><span class="comment">// Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -207,6 +211,10 @@
 /// As a counter example, if a predicate needs several columns of data to evaluate but
 /// leaves 99% of the rows, it may be better to not filter the data from parquet and
 /// apply the filter after the RecordBatch has been fully decoded.
+///
+/// Additionally, even if a predicate eliminates a moderate number of rows, it may still be faster
+/// to filter the data after the RecordBatch has been fully decoded, if the eliminated rows are
+/// not contiguous.
 ///
 /// [`RowSelection`]: crate::arrow::arrow_reader::RowSelection
 </span><span class="kw">pub struct </span>RowFilter {

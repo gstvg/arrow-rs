@@ -3106,6 +3106,18 @@
 <a href="#3104" id="3104">3104</a>
 <a href="#3105" id="3105">3105</a>
 <a href="#3106" id="3106">3106</a>
+<a href="#3107" id="3107">3107</a>
+<a href="#3108" id="3108">3108</a>
+<a href="#3109" id="3109">3109</a>
+<a href="#3110" id="3110">3110</a>
+<a href="#3111" id="3111">3111</a>
+<a href="#3112" id="3112">3112</a>
+<a href="#3113" id="3113">3113</a>
+<a href="#3114" id="3114">3114</a>
+<a href="#3115" id="3115">3115</a>
+<a href="#3116" id="3116">3116</a>
+<a href="#3117" id="3117">3117</a>
+<a href="#3118" id="3118">3118</a>
 </pre></div><pre class="rust"><code><span class="comment">// Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -3249,6 +3261,9 @@
     /// An example use case of this would be applying a selection determined by
     /// evaluating predicates against the [`Index`]
     ///
+    /// It is recommended to enable reading the page index if using this functionality, to allow
+    /// more efficient skipping over data pages. See [`ArrowReaderOptions::with_page_index`]
+    ///
     /// [`Index`]: crate::file::page_index::index::Index
     </span><span class="kw">pub fn </span>with_row_selection(<span class="self">self</span>, selection: RowSelection) -&gt; <span class="self">Self </span>{
         <span class="self">Self </span>{
@@ -3260,6 +3275,9 @@
     <span class="doccomment">/// Provide a [`RowFilter`] to skip decoding rows
     ///
     /// Row filters are applied after row group selection and row selection
+    ///
+    /// It is recommended to enable reading the page index if using this functionality, to allow
+    /// more efficient skipping over data pages. See [`ArrowReaderOptions::with_page_index`].
     </span><span class="kw">pub fn </span>with_row_filter(<span class="self">self</span>, filter: RowFilter) -&gt; <span class="self">Self </span>{
         <span class="self">Self </span>{
             filter: <span class="prelude-val">Some</span>(filter),
@@ -3271,6 +3289,9 @@
     ///
     /// The limit will be applied after any [`Self::with_row_selection`] and [`Self::with_row_filter`]
     /// allowing it to limit the final set of rows decoded after any pushed down predicates
+    ///
+    /// It is recommended to enable reading the page index if using this functionality, to allow
+    /// more efficient skipping over data pages. See [`ArrowReaderOptions::with_page_index`]
     </span><span class="kw">pub fn </span>with_limit(<span class="self">self</span>, limit: usize) -&gt; <span class="self">Self </span>{
         <span class="self">Self </span>{
             limit: <span class="prelude-val">Some</span>(limit),
@@ -3282,6 +3303,9 @@
     ///
     /// The offset will be applied after any [`Self::with_row_selection`] and [`Self::with_row_filter`]
     /// allowing it to skip rows after any pushed down predicates
+    ///
+    /// It is recommended to enable reading the page index if using this functionality, to allow
+    /// more efficient skipping over data pages. See [`ArrowReaderOptions::with_page_index`]
     </span><span class="kw">pub fn </span>with_offset(<span class="self">self</span>, offset: usize) -&gt; <span class="self">Self </span>{
         <span class="self">Self </span>{
             offset: <span class="prelude-val">Some</span>(offset),
