@@ -370,6 +370,9 @@
 <a href="#368" id="368">368</a>
 <a href="#369" id="369">369</a>
 <a href="#370" id="370">370</a>
+<a href="#371" id="371">371</a>
+<a href="#372" id="372">372</a>
+<a href="#373" id="373">373</a>
 </pre></div><pre class="rust"><code><span class="comment">// Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -653,6 +656,9 @@
         DataType::Union(<span class="kw">_</span>, <span class="kw">_</span>) =&gt; <span class="macro">json!</span>({<span class="string">"name"</span>: <span class="string">"union"</span>}),
         DataType::List(<span class="kw">_</span>) =&gt; <span class="macro">json!</span>({ <span class="string">"name"</span>: <span class="string">"list"</span>}),
         DataType::LargeList(<span class="kw">_</span>) =&gt; <span class="macro">json!</span>({ <span class="string">"name"</span>: <span class="string">"largelist"</span>}),
+        DataType::ListView(<span class="kw">_</span>) | DataType::LargeListView(<span class="kw">_</span>) =&gt; {
+            <span class="macro">unimplemented!</span>(<span class="string">"ListView/LargeListView not implemented"</span>)
+        }
         DataType::FixedSizeList(<span class="kw">_</span>, length) =&gt; {
             <span class="macro">json!</span>({<span class="string">"name"</span>:<span class="string">"fixedsizelist"</span>, <span class="string">"listSize"</span>: length})
         }
