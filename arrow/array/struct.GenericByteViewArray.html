@@ -9,7 +9,58 @@
 }</code></pre><details class="toggle top-doc" open><summary class="hideme"><span>Expand description</span></summary><div class="docblock"><p><a href="https://arrow.apache.org/docs/format/Columnar.html#variable-size-binary-view-layout">Variable-size Binary View Layout</a>: An array of variable length bytes view arrays.</p>
 <p>Different than <a href="struct.GenericByteArray.html" title="struct arrow::array::GenericByteArray"><code>crate::GenericByteArray</code></a> as it stores both an offset and length
 meaning that take / filter operations can be implemented without copying the underlying data.</p>
-</div></details><h2 id="fields" class="fields section-header">Fields<a href="#fields" class="anchor">§</a></h2><span id="structfield.data_type" class="structfield section-header"><a href="#structfield.data_type" class="anchor field">§</a><code>data_type: <a class="enum" href="../datatypes/enum.DataType.html" title="enum arrow::datatypes::DataType">DataType</a></code></span><span id="structfield.views" class="structfield section-header"><a href="#structfield.views" class="anchor field">§</a><code>views: <a class="struct" href="../buffer/struct.ScalarBuffer.html" title="struct arrow::buffer::ScalarBuffer">ScalarBuffer</a>&lt;<a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.u128.html">u128</a>&gt;</code></span><span id="structfield.buffers" class="structfield section-header"><a href="#structfield.buffers" class="anchor field">§</a><code>buffers: <a class="struct" href="https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html" title="struct alloc::vec::Vec">Vec</a>&lt;<a class="struct" href="../buffer/struct.Buffer.html" title="struct arrow::buffer::Buffer">Buffer</a>&gt;</code></span><span id="structfield.phantom" class="structfield section-header"><a href="#structfield.phantom" class="anchor field">§</a><code>phantom: <a class="struct" href="https://doc.rust-lang.org/nightly/core/marker/struct.PhantomData.html" title="struct core::marker::PhantomData">PhantomData</a>&lt;T&gt;</code></span><span id="structfield.nulls" class="structfield section-header"><a href="#structfield.nulls" class="anchor field">§</a><code>nulls: <a class="enum" href="https://doc.rust-lang.org/nightly/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;<a class="struct" href="../buffer/struct.NullBuffer.html" title="struct arrow::buffer::NullBuffer">NullBuffer</a>&gt;</code></span><h2 id="implementations" class="section-header">Implementations<a href="#implementations" class="anchor">§</a></h2><div id="implementations-list"><details class="toggle implementors-toggle" open><summary><section id="impl-GenericByteViewArray%3CT%3E" class="impl"><a href="#impl-GenericByteViewArray%3CT%3E" class="anchor">§</a><h3 class="code-header">impl&lt;T&gt; <a class="struct" href="struct.GenericByteViewArray.html" title="struct arrow::array::GenericByteViewArray">GenericByteViewArray</a>&lt;T&gt;<div class="where">where
+<p>See <a href="type.StringViewArray.html" title="type arrow::array::StringViewArray"><code>StringViewArray</code></a> for storing utf8 encoded string data and
+<a href="type.BinaryViewArray.html" title="type arrow::array::BinaryViewArray"><code>BinaryViewArray</code></a> for storing bytes.</p>
+<p>A <code>GenericByteViewArray</code> stores variable length byte strings. An array of
+<code>N</code> elements is stored as <code>N</code> fixed length “views” and a variable number
+of variable length “buffers”.</p>
+<p>Each view is a <code>u128</code> value  layout is different depending on the
+length of the string stored at that location:</p>
+<div class="example-wrap"><pre class="language-text"><code>                        ┌──────┬────────────────────────┐
+                        │length│      string value      │
+   Strings (len &lt;= 12)  │      │    (padded with 0)     │
+                        └──────┴────────────────────────┘
+                         0    31                      127
+
+                        ┌───────┬───────┬───────┬───────┐
+                        │length │prefix │  buf  │offset │
+   Strings (len &gt; 12)   │       │       │ index │       │
+                        └───────┴───────┴───────┴───────┘
+                         0    31       63      95    127
+</code></pre></div>
+<ul>
+<li>
+<p>Strings with length &lt;= 12 are stored directly in the view.</p>
+</li>
+<li>
+<p>Strings with length &gt; 12: The first four bytes are stored inline in the
+view and the entire string is stored in one of the buffers.</p>
+</li>
+</ul>
+<p>Unlike <a href="struct.GenericByteArray.html" title="struct arrow::array::GenericByteArray"><code>GenericByteArray</code></a>, there are no constraints on the offsets other
+than they must point into a valid buffer. However, they can be out of order,
+non continuous and overlapping.</p>
+<p>For example, in the following diagram, the strings “FishWasInTownToday” and
+“CrumpleFacedFish” are both longer than 12 bytes and thus are stored in a
+separate buffer while the string “LavaMonster” is stored inlined in the
+view. In this case, the same bytes for “Fish” are used to store both strings.</p>
+<div class="example-wrap"><pre class="language-text"><code>                                                                           ┌───┐
+                        ┌──────┬──────┬──────┬──────┐               offset │...│
+&quot;FishWasInTownTodayYay&quot; │  21  │ Fish │  0   │ 115  │─ ─              103  │Mr.│
+                        └──────┴──────┴──────┴──────┘   │      ┌ ─ ─ ─ ─ ▶ │Cru│
+                        ┌──────┬──────┬──────┬──────┐                      │mpl│
+&quot;CrumpleFacedFish&quot;      │  16  │ Crum │  0   │ 103  │─ ─│─ ─ ─ ┘           │eFa│
+                        └──────┴──────┴──────┴──────┘                      │ced│
+                        ┌──────┬────────────────────┐   └ ─ ─ ─ ─ ─ ─ ─ ─ ▶│Fis│
+&quot;LavaMonster&quot;           │  11  │   LavaMonster\0    │                      │hWa│
+                        └──────┴────────────────────┘               offset │sIn│
+                                                                      115  │Tow│
+                                                                           │nTo│
+                                                                           │day│
+                                 u128 &quot;views&quot;                              │Yay│
+                                                                  buffer 0 │...│
+                                                                           └───┘
+</code></pre></div></div></details><h2 id="fields" class="fields section-header">Fields<a href="#fields" class="anchor">§</a></h2><span id="structfield.data_type" class="structfield section-header"><a href="#structfield.data_type" class="anchor field">§</a><code>data_type: <a class="enum" href="../datatypes/enum.DataType.html" title="enum arrow::datatypes::DataType">DataType</a></code></span><span id="structfield.views" class="structfield section-header"><a href="#structfield.views" class="anchor field">§</a><code>views: <a class="struct" href="../buffer/struct.ScalarBuffer.html" title="struct arrow::buffer::ScalarBuffer">ScalarBuffer</a>&lt;<a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.u128.html">u128</a>&gt;</code></span><span id="structfield.buffers" class="structfield section-header"><a href="#structfield.buffers" class="anchor field">§</a><code>buffers: <a class="struct" href="https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html" title="struct alloc::vec::Vec">Vec</a>&lt;<a class="struct" href="../buffer/struct.Buffer.html" title="struct arrow::buffer::Buffer">Buffer</a>&gt;</code></span><span id="structfield.phantom" class="structfield section-header"><a href="#structfield.phantom" class="anchor field">§</a><code>phantom: <a class="struct" href="https://doc.rust-lang.org/nightly/core/marker/struct.PhantomData.html" title="struct core::marker::PhantomData">PhantomData</a>&lt;T&gt;</code></span><span id="structfield.nulls" class="structfield section-header"><a href="#structfield.nulls" class="anchor field">§</a><code>nulls: <a class="enum" href="https://doc.rust-lang.org/nightly/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;<a class="struct" href="../buffer/struct.NullBuffer.html" title="struct arrow::buffer::NullBuffer">NullBuffer</a>&gt;</code></span><h2 id="implementations" class="section-header">Implementations<a href="#implementations" class="anchor">§</a></h2><div id="implementations-list"><details class="toggle implementors-toggle" open><summary><section id="impl-GenericByteViewArray%3CT%3E" class="impl"><a href="#impl-GenericByteViewArray%3CT%3E" class="anchor">§</a><h3 class="code-header">impl&lt;T&gt; <a class="struct" href="struct.GenericByteViewArray.html" title="struct arrow::array::GenericByteViewArray">GenericByteViewArray</a>&lt;T&gt;<div class="where">where
     T: <a class="trait" href="../datatypes/trait.ByteViewType.html" title="trait arrow::datatypes::ByteViewType">ByteViewType</a> + ?<a class="trait" href="https://doc.rust-lang.org/nightly/core/marker/trait.Sized.html" title="trait core::marker::Sized">Sized</a>,</div></h3></section></summary><div class="impl-items"><details class="toggle method-toggle" open><summary><section id="method.new" class="method"><h4 class="code-header">pub fn <a href="#method.new" class="fn">new</a>(
     views: <a class="struct" href="../buffer/struct.ScalarBuffer.html" title="struct arrow::buffer::ScalarBuffer">ScalarBuffer</a>&lt;<a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.u128.html">u128</a>&gt;,
     buffers: <a class="struct" href="https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html" title="struct alloc::vec::Vec">Vec</a>&lt;<a class="struct" href="../buffer/struct.Buffer.html" title="struct arrow::buffer::Buffer">Buffer</a>&gt;,
