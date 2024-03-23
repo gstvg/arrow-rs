@@ -11,7 +11,7 @@ var srcIndex = new Map(JSON.parse('[\
 ["arrow_flight",["",[["sql",[["metadata",[],["catalogs.rs","db_schemas.rs","mod.rs","sql_info.rs","tables.rs","xdbc_info.rs"]]],["arrow.flight.protocol.sql.rs","client.rs","mod.rs","server.rs"]]],["arrow.flight.protocol.rs","client.rs","decode.rs","encode.rs","error.rs","lib.rs","trailers.rs","utils.rs"]]],\
 ["arrow_integration_test",["",[],["datatype.rs","field.rs","lib.rs","schema.rs"]]],\
 ["arrow_integration_testing",["",[["flight_client_scenarios",[],["auth_basic_proto.rs","integration_test.rs","middleware.rs"]],["flight_server_scenarios",[],["auth_basic_proto.rs","integration_test.rs","middleware.rs"]]],["flight_client_scenarios.rs","flight_server_scenarios.rs","lib.rs"]]],\
-["arrow_ipc",["",[["gen",[],["File.rs","Message.rs","Schema.rs","SparseTensor.rs","Tensor.rs","mod.rs"]]],["compression.rs","convert.rs","lib.rs","reader.rs","writer.rs"]]],\
+["arrow_ipc",["",[["gen",[],["File.rs","Message.rs","Schema.rs","SparseTensor.rs","Tensor.rs","mod.rs"]],["reader",[],["stream.rs"]]],["compression.rs","convert.rs","lib.rs","reader.rs","writer.rs"]]],\
 ["arrow_json",["",[["reader",[],["boolean_array.rs","decimal_array.rs","list_array.rs","map_array.rs","mod.rs","null_array.rs","primitive_array.rs","schema.rs","serializer.rs","string_array.rs","struct_array.rs","tape.rs","timestamp_array.rs"]],["writer",[],["encoder.rs"]]],["lib.rs","writer.rs"]]],\
 ["arrow_json_integration_test",["",[],["arrow-json-integration-test.rs"]]],\
 ["arrow_ord",["",[],["cmp.rs","comparison.rs","lib.rs","ord.rs","partition.rs","rank.rs","sort.rs"]]],\
