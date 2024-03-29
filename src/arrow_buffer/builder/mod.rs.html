@@ -418,6 +418,9 @@
 <a href="#416" id="416">416</a>
 <a href="#417" id="417">417</a>
 <a href="#418" id="418">418</a>
+<a href="#419" id="419">419</a>
+<a href="#420" id="420">420</a>
+<a href="#421" id="421">421</a>
 </pre></div><pre class="rust"><code><span class="comment">// Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -438,9 +441,12 @@
 </span><span class="doccomment">//! Buffer builders
 
 </span><span class="kw">mod </span>boolean;
-<span class="kw">pub use </span>boolean::<span class="kw-2">*</span>;
 <span class="kw">mod </span>null;
+<span class="kw">mod </span>offset;
+
+<span class="kw">pub use </span>boolean::<span class="kw-2">*</span>;
 <span class="kw">pub use </span>null::<span class="kw-2">*</span>;
+<span class="kw">pub use </span>offset::<span class="kw-2">*</span>;
 
 <span class="kw">use crate</span>::{ArrowNativeType, Buffer, MutableBuffer};
 <span class="kw">use </span>std::{iter, marker::PhantomData};
