@@ -1863,6 +1863,8 @@
 <a href="#1861" id="1861">1861</a>
 <a href="#1862" id="1862">1862</a>
 <a href="#1863" id="1863">1863</a>
+<a href="#1864" id="1864">1864</a>
+<a href="#1865" id="1865">1865</a>
 </pre></div><pre class="rust"><code><span class="comment">// Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -1940,6 +1942,7 @@
             | DataType::Float32
             | DataType::Float64
             | DataType::Utf8
+            | DataType::Utf8View
             | DataType::LargeUtf8
             | DataType::Timestamp(<span class="kw">_</span>, <span class="kw">_</span>)
             | DataType::Date32
@@ -1950,6 +1953,7 @@
             | DataType::Interval(<span class="kw">_</span>)
             | DataType::Binary
             | DataType::LargeBinary
+            | DataType::BinaryView
             | DataType::Decimal128(<span class="kw">_</span>, <span class="kw">_</span>)
             | DataType::Decimal256(<span class="kw">_</span>, <span class="kw">_</span>)
             | DataType::FixedSizeBinary(<span class="kw">_</span>)

@@ -1876,6 +1876,12 @@
 <a href="#1874" id="1874">1874</a>
 <a href="#1875" id="1875">1875</a>
 <a href="#1876" id="1876">1876</a>
+<a href="#1877" id="1877">1877</a>
+<a href="#1878" id="1878">1878</a>
+<a href="#1879" id="1879">1879</a>
+<a href="#1880" id="1880">1880</a>
+<a href="#1881" id="1881">1881</a>
+<a href="#1882" id="1882">1882</a>
 </pre></div><pre class="rust"><code><span class="comment">// Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -2342,9 +2348,10 @@
                 .with_length(<span class="kw-2">*</span>length)
                 .build()
         }
-        DataType::BinaryView | DataType::Utf8View =&gt; {
-            <span class="macro">unimplemented!</span>(<span class="string">"BinaryView/Utf8View not implemented"</span>)
-        }
+        DataType::BinaryView =&gt; Type::primitive_type_builder(name, PhysicalType::BYTE_ARRAY)
+            .with_repetition(repetition)
+            .with_id(id)
+            .build(),
         DataType::Decimal128(precision, scale) | DataType::Decimal256(precision, scale) =&gt; {
             <span class="comment">// Decimal precision determines the Parquet physical type to use.
             // Following the: https://github.com/apache/parquet-format/blob/master/LogicalTypes.md#decimal
@@ -2377,6 +2384,11 @@
                 .with_id(id)
                 .build()
         }
+        DataType::Utf8View =&gt; Type::primitive_type_builder(name, PhysicalType::BYTE_ARRAY)
+            .with_logical_type(<span class="prelude-val">Some</span>(LogicalType::String))
+            .with_repetition(repetition)
+            .with_id(id)
+            .build(),
         DataType::List(f) | DataType::FixedSizeList(f, <span class="kw">_</span>) | DataType::LargeList(f) =&gt; {
             Type::group_type_builder(name)
                 .with_fields(<span class="macro">vec!</span>[Arc::new(

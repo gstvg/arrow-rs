@@ -370,10 +370,6 @@
 <a href="#368" id="368">368</a>
 <a href="#369" id="369">369</a>
 <a href="#370" id="370">370</a>
-<a href="#371" id="371">371</a>
-<a href="#372" id="372">372</a>
-<a href="#373" id="373">373</a>
-<a href="#374" id="374">374</a>
 </pre></div><pre class="rust"><code><span class="comment">// Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -395,6 +391,7 @@
 
 <span class="kw">use </span>arrow_schema::{DataType, Fields, SchemaBuilder};
 
+<span class="kw">use </span><span class="kw">crate</span>::arrow::array_reader::byte_array::make_byte_view_array_reader;
 <span class="kw">use </span><span class="kw">crate</span>::arrow::array_reader::empty_array::make_empty_array_reader;
 <span class="kw">use </span><span class="kw">crate</span>::arrow::array_reader::fixed_len_byte_array::make_fixed_len_byte_array_reader;
 <span class="kw">use </span><span class="kw">crate</span>::arrow::array_reader::{
@@ -405,9 +402,7 @@
 <span class="kw">use </span><span class="kw">crate</span>::arrow::schema::{ParquetField, ParquetFieldType};
 <span class="kw">use </span><span class="kw">crate</span>::arrow::ProjectionMask;
 <span class="kw">use </span><span class="kw">crate</span>::basic::Type <span class="kw">as </span>PhysicalType;
-<span class="kw">use </span><span class="kw">crate</span>::data_type::{
-    BoolType, DoubleType, FloatType, Int32Type, Int64Type, Int96Type,
-};
+<span class="kw">use </span><span class="kw">crate</span>::data_type::{BoolType, DoubleType, FloatType, Int32Type, Int64Type, Int96Type};
 <span class="kw">use </span><span class="kw">crate</span>::errors::{ParquetError, <span class="prelude-ty">Result</span>};
 <span class="kw">use </span><span class="kw">crate</span>::schema::types::{ColumnDescriptor, ColumnPath, Type};
 
@@ -431,17 +426,13 @@
     row_groups: <span class="kw-2">&amp;</span><span class="kw">dyn </span>RowGroups,
 ) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="prelude-ty">Option</span>&lt;Box&lt;<span class="kw">dyn </span>ArrayReader&gt;&gt;&gt; {
     <span class="kw">match </span>field.field_type {
-        ParquetFieldType::Primitive { .. } =&gt; {
-            build_primitive_reader(field, mask, row_groups)
-        }
+        ParquetFieldType::Primitive { .. } =&gt; build_primitive_reader(field, mask, row_groups),
         ParquetFieldType::Group { .. } =&gt; <span class="kw">match </span><span class="kw-2">&amp;</span>field.arrow_type {
             DataType::Map(<span class="kw">_</span>, <span class="kw">_</span>) =&gt; build_map_reader(field, mask, row_groups),
             DataType::Struct(<span class="kw">_</span>) =&gt; build_struct_reader(field, mask, row_groups),
             DataType::List(<span class="kw">_</span>) =&gt; build_list_reader(field, mask, <span class="bool-val">false</span>, row_groups),
             DataType::LargeList(<span class="kw">_</span>) =&gt; build_list_reader(field, mask, <span class="bool-val">true</span>, row_groups),
-            DataType::FixedSizeList(<span class="kw">_</span>, <span class="kw">_</span>) =&gt; {
-                build_fixed_size_list_reader(field, mask, row_groups)
-            }
+            DataType::FixedSizeList(<span class="kw">_</span>, <span class="kw">_</span>) =&gt; build_fixed_size_list_reader(field, mask, row_groups),
             d =&gt; <span class="macro">unimplemented!</span>(<span class="string">"reading group type {} not implemented"</span>, d),
         },
     }
@@ -516,9 +507,9 @@
                 DataType::List(f) =&gt; {
                     DataType::List(Arc::new(f.as_ref().clone().with_data_type(item_type)))
                 }
-                DataType::LargeList(f) =&gt; DataType::LargeList(Arc::new(
-                    f.as_ref().clone().with_data_type(item_type),
-                )),
+                DataType::LargeList(f) =&gt; {
+                    DataType::LargeList(Arc::new(f.as_ref().clone().with_data_type(item_type)))
+                }
                 <span class="kw">_ </span>=&gt; <span class="macro">unreachable!</span>(),
             };
 
@@ -665,6 +656,9 @@
             <span class="prelude-val">Some</span>(DataType::Dictionary(<span class="kw">_</span>, <span class="kw">_</span>)) =&gt; {
                 make_byte_array_dictionary_reader(page_iterator, column_desc, arrow_type)<span class="question-mark">?
             </span>}
+            <span class="prelude-val">Some</span>(DataType::Utf8View | DataType::BinaryView) =&gt; {
+                make_byte_view_array_reader(page_iterator, column_desc, arrow_type)<span class="question-mark">?
+            </span>}
             <span class="kw">_ </span>=&gt; make_byte_array_reader(page_iterator, column_desc, arrow_type)<span class="question-mark">?</span>,
         },
         PhysicalType::FIXED_LEN_BYTE_ARRAY =&gt; {
@@ -723,8 +717,7 @@
     <span class="attr">#[test]
     </span><span class="kw">fn </span>test_create_array_reader() {
         <span class="kw">let </span>file = get_test_file(<span class="string">"nulls.snappy.parquet"</span>);
-        <span class="kw">let </span>file_reader: Arc&lt;<span class="kw">dyn </span>FileReader&gt; =
-            Arc::new(SerializedFileReader::new(file).unwrap());
+        <span class="kw">let </span>file_reader: Arc&lt;<span class="kw">dyn </span>FileReader&gt; = Arc::new(SerializedFileReader::new(file).unwrap());
 
         <span class="kw">let </span>file_metadata = file_reader.metadata().file_metadata();
         <span class="kw">let </span>mask = ProjectionMask::leaves(file_metadata.schema_descr(), [<span class="number">0</span>]);
@@ -735,8 +728,7 @@
         )
         .unwrap();
 
-        <span class="kw">let </span>array_reader =
-            build_array_reader(fields.as_ref(), <span class="kw-2">&amp;</span>mask, <span class="kw-2">&amp;</span>file_reader).unwrap();
+        <span class="kw">let </span>array_reader = build_array_reader(fields.as_ref(), <span class="kw-2">&amp;</span>mask, <span class="kw-2">&amp;</span>file_reader).unwrap();
 
         <span class="comment">// Create arrow types
         </span><span class="kw">let </span>arrow_type = DataType::Struct(Fields::from(<span class="macro">vec!</span>[Field::new(

@@ -535,6 +535,10 @@
 <a href="#533" id="533">533</a>
 <a href="#534" id="534">534</a>
 <a href="#535" id="535">535</a>
+<a href="#536" id="536">536</a>
+<a href="#537" id="537">537</a>
+<a href="#538" id="538">538</a>
+<a href="#539" id="539">539</a>
 </pre></div><pre class="rust"><code><span class="comment">// Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -564,8 +568,8 @@
 <span class="kw">use </span><span class="kw">crate</span>::util::bit_util::num_required_bits;
 <span class="kw">use </span><span class="kw">crate</span>::util::interner::{Interner, Storage};
 <span class="kw">use </span>arrow_array::{
-    Array, ArrayAccessor, BinaryArray, DictionaryArray, LargeBinaryArray, LargeStringArray,
-    StringArray,
+    Array, ArrayAccessor, BinaryArray, BinaryViewArray, DictionaryArray, LargeBinaryArray,
+    LargeStringArray, StringArray, StringViewArray,
 };
 <span class="kw">use </span>arrow_schema::DataType;
 
@@ -603,11 +607,15 @@
             DataType::LargeUtf8 =&gt; {
                 <span class="macro-nonterminal">$op</span>(<span class="macro-nonterminal">$array</span>.as_any().downcast_ref::&lt;LargeStringArray&gt;().unwrap()$(, <span class="macro-nonterminal">$arg</span>)<span class="kw-2">*</span>)
             }
+            DataType::Utf8View =&gt; <span class="macro-nonterminal">$op</span>(<span class="macro-nonterminal">$array</span>.as_any().downcast_ref::&lt;StringViewArray&gt;().unwrap()$(, <span class="macro-nonterminal">$arg</span>)<span class="kw-2">*</span>),
             DataType::Binary =&gt; {
                 <span class="macro-nonterminal">$op</span>(<span class="macro-nonterminal">$array</span>.as_any().downcast_ref::&lt;BinaryArray&gt;().unwrap()$(, <span class="macro-nonterminal">$arg</span>)<span class="kw-2">*</span>)
             }
             DataType::LargeBinary =&gt; {
                 <span class="macro-nonterminal">$op</span>(<span class="macro-nonterminal">$array</span>.as_any().downcast_ref::&lt;LargeBinaryArray&gt;().unwrap()$(, <span class="macro-nonterminal">$arg</span>)<span class="kw-2">*</span>)
+            }
+            DataType::BinaryView =&gt; {
+                <span class="macro-nonterminal">$op</span>(<span class="macro-nonterminal">$array</span>.as_any().downcast_ref::&lt;BinaryViewArray&gt;().unwrap()$(, <span class="macro-nonterminal">$arg</span>)<span class="kw-2">*</span>)
             }
             DataType::Dictionary(key, value) =&gt; <span class="kw">match </span>value.as_ref() {
                 DataType::Utf8 =&gt; <span class="macro">downcast_dict_op!</span>(key, StringArray, <span class="macro-nonterminal">$array</span>, <span class="macro-nonterminal">$op</span>$(, <span class="macro-nonterminal">$arg</span>)<span class="kw-2">*</span>),
