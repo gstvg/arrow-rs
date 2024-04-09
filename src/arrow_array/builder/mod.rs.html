@@ -317,6 +317,14 @@
 <a href="#315" id="315">315</a>
 <a href="#316" id="316">316</a>
 <a href="#317" id="317">317</a>
+<a href="#318" id="318">318</a>
+<a href="#319" id="319">319</a>
+<a href="#320" id="320">320</a>
+<a href="#321" id="321">321</a>
+<a href="#322" id="322">322</a>
+<a href="#323" id="323">323</a>
+<a href="#324" id="324">324</a>
+<a href="#325" id="325">325</a>
 </pre></div><pre class="rust"><code><span class="comment">// Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -624,14 +632,22 @@
 </span><span class="kw">pub type </span>LargeListBuilder&lt;T&gt; = GenericListBuilder&lt;i64, T&gt;;
 
 <span class="doccomment">/// Builder for [`BinaryArray`](crate::array::BinaryArray)
+///
+/// See examples on [`GenericBinaryBuilder`]
 </span><span class="kw">pub type </span>BinaryBuilder = GenericBinaryBuilder&lt;i32&gt;;
 
 <span class="doccomment">/// Builder for [`LargeBinaryArray`](crate::array::LargeBinaryArray)
+///
+/// See examples on [`GenericBinaryBuilder`]
 </span><span class="kw">pub type </span>LargeBinaryBuilder = GenericBinaryBuilder&lt;i64&gt;;
 
 <span class="doccomment">/// Builder for [`StringArray`](crate::array::StringArray)
+///
+/// See examples on [`GenericStringBuilder`]
 </span><span class="kw">pub type </span>StringBuilder = GenericStringBuilder&lt;i32&gt;;
 
 <span class="doccomment">/// Builder for [`LargeStringArray`](crate::array::LargeStringArray)
+///
+/// See examples on [`GenericStringBuilder`]
 </span><span class="kw">pub type </span>LargeStringBuilder = GenericStringBuilder&lt;i64&gt;;
 </code></pre></div></section></main></body></html>
