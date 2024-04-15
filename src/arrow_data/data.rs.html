@@ -2139,6 +2139,11 @@
 <a href="#2139" id="2139">2139</a>
 <a href="#2140" id="2140">2140</a>
 <a href="#2141" id="2141">2141</a>
+<a href="#2142" id="2142">2142</a>
+<a href="#2143" id="2143">2143</a>
+<a href="#2144" id="2144">2144</a>
+<a href="#2145" id="2145">2145</a>
+<a href="#2146" id="2146">2146</a>
 </pre></div><pre class="rust"><code><span class="comment">// Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -3908,6 +3913,11 @@
 
     <span class="kw">pub fn </span>add_buffer(<span class="kw-2">mut </span><span class="self">self</span>, b: Buffer) -&gt; <span class="self">Self </span>{
         <span class="self">self</span>.buffers.push(b);
+        <span class="self">self
+    </span>}
+
+    <span class="kw">pub fn </span>add_buffers(<span class="kw-2">mut </span><span class="self">self</span>, bs: Vec&lt;Buffer&gt;) -&gt; <span class="self">Self </span>{
+        <span class="self">self</span>.buffers.extend(bs);
         <span class="self">self
     </span>}
 

@@ -542,6 +542,7 @@
 <a href="#542" id="542">542</a>
 <a href="#543" id="543">543</a>
 <a href="#544" id="544">544</a>
+<a href="#545" id="545">545</a>
 </pre></div><pre class="rust"><code><span class="comment">// Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -565,6 +566,7 @@
 <span class="kw">use </span>arrow_array::types::ArrowDictionaryKeyType;
 <span class="kw">use </span>arrow_array::<span class="kw-2">*</span>;
 <span class="kw">use </span>arrow_buffer::buffer::NullBuffer;
+<span class="kw">use </span>arrow_buffer::ArrowNativeType;
 <span class="kw">use </span>arrow_buffer::{Buffer, MutableBuffer};
 <span class="kw">use </span>arrow_data::ArrayData;
 <span class="kw">use </span>arrow_schema::ArrowError;
@@ -930,7 +932,7 @@
     </span>O: ArrowPrimitiveType,
     F: Fn(A::Item, B::Item) -&gt; <span class="prelude-ty">Result</span>&lt;O::Native, ArrowError&gt;,
 {
-    <span class="kw">let </span><span class="kw-2">mut </span>buffer = MutableBuffer::new(len * O::get_byte_width());
+    <span class="kw">let </span><span class="kw-2">mut </span>buffer = MutableBuffer::new(len * O::Native::get_byte_width());
     <span class="kw">for </span>idx <span class="kw">in </span><span class="number">0</span>..len {
         <span class="kw">unsafe </span>{
             buffer.push_unchecked(op(a.value_unchecked(idx), b.value_unchecked(idx))<span class="question-mark">?</span>);

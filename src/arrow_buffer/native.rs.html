@@ -278,6 +278,11 @@
 <a href="#278" id="278">278</a>
 <a href="#279" id="279">279</a>
 <a href="#280" id="280">280</a>
+<a href="#281" id="281">281</a>
+<a href="#282" id="282">282</a>
+<a href="#283" id="283">283</a>
+<a href="#284" id="284">284</a>
+<a href="#285" id="285">285</a>
 </pre></div><pre class="rust"><code><span class="comment">// Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -327,6 +332,11 @@
 </span><span class="kw">pub trait </span>ArrowNativeType:
     std::fmt::Debug + Send + Sync + Copy + PartialOrd + Default + private::Sealed + <span class="lifetime">'static
 </span>{
+    <span class="doccomment">/// Returns the byte width of this native type.
+    </span><span class="kw">fn </span>get_byte_width() -&gt; usize {
+        std::mem::size_of::&lt;<span class="self">Self</span>&gt;()
+    }
+
     <span class="doccomment">/// Convert native integer type from usize
     ///
     /// Returns `None` if [`Self`] is not an integer or conversion would result

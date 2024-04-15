@@ -1703,6 +1703,7 @@
 <a href="#1703" id="1703">1703</a>
 <a href="#1704" id="1704">1704</a>
 <a href="#1705" id="1705">1705</a>
+<a href="#1706" id="1706">1706</a>
 </pre></div><pre class="rust"><code><span class="comment">// Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -1764,6 +1765,7 @@
     </span><span class="kw">const </span>DATA_TYPE: DataType;
 
     <span class="doccomment">/// Returns the byte width of this primitive type.
+    </span><span class="attr">#[deprecated(note = <span class="string">"Use ArrowNativeType::get_byte_width"</span>)]
     </span><span class="kw">fn </span>get_byte_width() -&gt; usize {
         std::mem::size_of::&lt;<span class="self">Self</span>::Native&gt;()
     }
