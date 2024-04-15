@@ -169,6 +169,8 @@
 <a href="#169" id="169">169</a>
 <a href="#170" id="170">170</a>
 <a href="#171" id="171">171</a>
+<a href="#172" id="172">172</a>
+<a href="#173" id="173">173</a>
 </pre></div><pre class="rust"><code><span class="comment">// Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -234,7 +236,9 @@
 {
     <span class="kw">let </span>cap = array.len() * size <span class="kw">as </span>usize;
 
-    <span class="kw">let </span><span class="kw-2">mut </span>nulls = (cast_options.safe || array.null_count() != <span class="number">0</span>).then(|| {
+    <span class="comment">// Whether the resulting array may contain null lists
+    </span><span class="kw">let </span>nullable = cast_options.safe || array.null_count() != <span class="number">0</span>;
+    <span class="kw">let </span><span class="kw-2">mut </span>nulls = nullable.then(|| {
         <span class="kw">let </span><span class="kw-2">mut </span>buffer = BooleanBufferBuilder::new(array.len());
         <span class="kw">match </span>array.nulls() {
             <span class="prelude-val">Some</span>(n) =&gt; buffer.append_buffer(n.inner()),
@@ -245,7 +249,7 @@
 
     <span class="comment">// Nulls in FixedSizeListArray take up space and so we must pad the values
     </span><span class="kw">let </span>values = array.values().to_data();
-    <span class="kw">let </span><span class="kw-2">mut </span>mutable = MutableArrayData::new(<span class="macro">vec!</span>[<span class="kw-2">&amp;</span>values], cast_options.safe, cap);
+    <span class="kw">let </span><span class="kw-2">mut </span>mutable = MutableArrayData::new(<span class="macro">vec!</span>[<span class="kw-2">&amp;</span>values], nullable, cap);
     <span class="comment">// The end position in values of the last incorrectly-sized list slice
     </span><span class="kw">let </span><span class="kw-2">mut </span>last_pos = <span class="number">0</span>;
     <span class="kw">for </span>(idx, w) <span class="kw">in </span>array.offsets().windows(<span class="number">2</span>).enumerate() {

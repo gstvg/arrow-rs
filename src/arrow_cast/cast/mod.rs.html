@@ -8656,6 +8656,27 @@
 <a href="#8656" id="8656">8656</a>
 <a href="#8657" id="8657">8657</a>
 <a href="#8658" id="8658">8658</a>
+<a href="#8659" id="8659">8659</a>
+<a href="#8660" id="8660">8660</a>
+<a href="#8661" id="8661">8661</a>
+<a href="#8662" id="8662">8662</a>
+<a href="#8663" id="8663">8663</a>
+<a href="#8664" id="8664">8664</a>
+<a href="#8665" id="8665">8665</a>
+<a href="#8666" id="8666">8666</a>
+<a href="#8667" id="8667">8667</a>
+<a href="#8668" id="8668">8668</a>
+<a href="#8669" id="8669">8669</a>
+<a href="#8670" id="8670">8670</a>
+<a href="#8671" id="8671">8671</a>
+<a href="#8672" id="8672">8672</a>
+<a href="#8673" id="8673">8673</a>
+<a href="#8674" id="8674">8674</a>
+<a href="#8675" id="8675">8675</a>
+<a href="#8676" id="8676">8676</a>
+<a href="#8677" id="8677">8677</a>
+<a href="#8678" id="8678">8678</a>
+<a href="#8679" id="8679">8679</a>
 </pre></div><pre class="rust"><code><span class="comment">// Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -15461,6 +15482,27 @@
                 </span><span class="prelude-val">None</span>, <span class="comment">// Too long -&gt; replaced with null
                 </span><span class="prelude-val">Some</span>(<span class="macro">vec!</span>[<span class="prelude-val">Some</span>(<span class="number">3</span>), <span class="prelude-val">Some</span>(<span class="number">4</span>), <span class="prelude-val">Some</span>(<span class="number">5</span>)]),
             ],
+            <span class="number">3</span>,
+        )) <span class="kw">as </span>ArrayRef;
+        <span class="macro">assert_eq!</span>(expected.as_ref(), res.as_ref());
+
+        <span class="comment">// The safe option is false and the source array contains a null list.
+        // issue: https://github.com/apache/arrow-rs/issues/5642
+        </span><span class="kw">let </span>array = Arc::new(ListArray::from_iter_primitive::&lt;Int32Type, <span class="kw">_</span>, <span class="kw">_</span>&gt;(<span class="macro">vec!</span>[
+            <span class="prelude-val">Some</span>(<span class="macro">vec!</span>[<span class="prelude-val">Some</span>(<span class="number">1</span>), <span class="prelude-val">Some</span>(<span class="number">2</span>), <span class="prelude-val">Some</span>(<span class="number">3</span>)]),
+            <span class="prelude-val">None</span>,
+        ])) <span class="kw">as </span>ArrayRef;
+        <span class="kw">let </span>res = cast_with_options(
+            array.as_ref(),
+            <span class="kw-2">&amp;</span>DataType::FixedSizeList(Arc::new(Field::new(<span class="string">"item"</span>, DataType::Int32, <span class="bool-val">true</span>)), <span class="number">3</span>),
+            <span class="kw-2">&amp;</span>CastOptions {
+                safe: <span class="bool-val">false</span>,
+                ..Default::default()
+            },
+        )
+        .unwrap();
+        <span class="kw">let </span>expected = Arc::new(FixedSizeListArray::from_iter_primitive::&lt;Int32Type, <span class="kw">_</span>, <span class="kw">_</span>&gt;(
+            <span class="macro">vec!</span>[<span class="prelude-val">Some</span>(<span class="macro">vec!</span>[<span class="prelude-val">Some</span>(<span class="number">1</span>), <span class="prelude-val">Some</span>(<span class="number">2</span>), <span class="prelude-val">Some</span>(<span class="number">3</span>)]), <span class="prelude-val">None</span>],
             <span class="number">3</span>,
         )) <span class="kw">as </span>ArrayRef;
         <span class="macro">assert_eq!</span>(expected.as_ref(), res.as_ref());
