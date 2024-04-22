@@ -747,9 +747,9 @@
 <span class="kw">pub mod </span>datatypes;
 <span class="kw">pub mod </span>error;
 <span class="attr">#[cfg(feature = <span class="string">"ffi"</span>)]
-</span><span class="kw">pub mod </span>ffi;
+</span><span class="kw">pub use </span>arrow_array::ffi;
 <span class="attr">#[cfg(feature = <span class="string">"ffi"</span>)]
-</span><span class="kw">pub mod </span>ffi_stream;
+</span><span class="kw">pub use </span>arrow_array::ffi_stream;
 <span class="attr">#[cfg(feature = <span class="string">"ipc"</span>)]
 </span><span class="kw">pub use </span>arrow_ipc <span class="kw">as </span>ipc;
 <span class="attr">#[cfg(feature = <span class="string">"json"</span>)]
