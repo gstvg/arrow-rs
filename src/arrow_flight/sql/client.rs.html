@@ -662,6 +662,11 @@
 <a href="#662" id="662">662</a>
 <a href="#663" id="663">663</a>
 <a href="#664" id="664">664</a>
+<a href="#665" id="665">665</a>
+<a href="#666" id="666">666</a>
+<a href="#667" id="667">667</a>
+<a href="#668" id="668">668</a>
+<a href="#669" id="669">669</a>
 </pre></div><pre class="rust"><code><span class="comment">// Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -759,6 +764,11 @@
     <span class="doccomment">/// Set auth token to the given value.
     </span><span class="kw">pub fn </span>set_token(<span class="kw-2">&amp;mut </span><span class="self">self</span>, token: String) {
         <span class="self">self</span>.token = <span class="prelude-val">Some</span>(token);
+    }
+
+    <span class="doccomment">/// Clear the auth token.
+    </span><span class="kw">pub fn </span>clear_token(<span class="kw-2">&amp;mut </span><span class="self">self</span>) {
+        <span class="self">self</span>.token = <span class="prelude-val">None</span>;
     }
 
     <span class="doccomment">/// Set header value.
