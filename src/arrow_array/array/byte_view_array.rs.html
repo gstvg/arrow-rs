@@ -634,6 +634,18 @@
 <a href="#634" id="634">634</a>
 <a href="#635" id="635">635</a>
 <a href="#636" id="636">636</a>
+<a href="#637" id="637">637</a>
+<a href="#638" id="638">638</a>
+<a href="#639" id="639">639</a>
+<a href="#640" id="640">640</a>
+<a href="#641" id="641">641</a>
+<a href="#642" id="642">642</a>
+<a href="#643" id="643">643</a>
+<a href="#644" id="644">644</a>
+<a href="#645" id="645">645</a>
+<a href="#646" id="646">646</a>
+<a href="#647" id="647">647</a>
+<a href="#648" id="648">648</a>
 </pre></div><pre class="rust"><code><span class="comment">// Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -1061,6 +1073,18 @@
     /// Caller is responsible for ensuring that items in array are utf8 data.
     </span><span class="kw">pub unsafe fn </span>to_string_view_unchecked(<span class="self">self</span>) -&gt; StringViewArray {
         StringViewArray::new_unchecked(<span class="self">self</span>.views, <span class="self">self</span>.buffers, <span class="self">self</span>.nulls)
+    }
+}
+
+<span class="kw">impl </span>From&lt;Vec&lt;<span class="kw-2">&amp;</span>[u8]&gt;&gt; <span class="kw">for </span>BinaryViewArray {
+    <span class="kw">fn </span>from(v: Vec&lt;<span class="kw-2">&amp;</span>[u8]&gt;) -&gt; <span class="self">Self </span>{
+        <span class="self">Self</span>::from_iter_values(v)
+    }
+}
+
+<span class="kw">impl </span>From&lt;Vec&lt;<span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span>[u8]&gt;&gt;&gt; <span class="kw">for </span>BinaryViewArray {
+    <span class="kw">fn </span>from(v: Vec&lt;<span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span>[u8]&gt;&gt;) -&gt; <span class="self">Self </span>{
+        v.into_iter().collect()
     }
 }
 
