@@ -751,7 +751,7 @@
 
 <span class="kw">impl </span>Sbbf {
     <span class="doccomment">/// Create a new [Sbbf] with given number of distinct values and false positive probability.
-    /// Will panic if `fpp` is greater than 1.0 or less than 0.0.
+    /// Will return an error if `fpp` is greater than or equal to 1.0 or less than 0.0.
     </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>new_with_ndv_fpp(ndv: u64, fpp: f64) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>, ParquetError&gt; {
         <span class="kw">if </span>!(<span class="number">0.0</span>..<span class="number">1.0</span>).contains(<span class="kw-2">&amp;</span>fpp) {
             <span class="kw">return </span><span class="prelude-val">Err</span>(ParquetError::General(<span class="macro">format!</span>(
