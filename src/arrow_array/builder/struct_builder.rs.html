@@ -893,7 +893,7 @@
 </span><span class="kw">pub fn </span>make_builder(datatype: <span class="kw-2">&amp;</span>DataType, capacity: usize) -&gt; Box&lt;<span class="kw">dyn </span>ArrayBuilder&gt; {
     <span class="kw">use </span><span class="kw">crate</span>::builder::<span class="kw-2">*</span>;
     <span class="kw">match </span>datatype {
-        DataType::Null =&gt; Box::new(NullBuilder::with_capacity(capacity)),
+        DataType::Null =&gt; Box::new(NullBuilder::new()),
         DataType::Boolean =&gt; Box::new(BooleanBuilder::with_capacity(capacity)),
         DataType::Int8 =&gt; Box::new(Int8Builder::with_capacity(capacity)),
         DataType::Int16 =&gt; Box::new(Int16Builder::with_capacity(capacity)),

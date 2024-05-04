@@ -2378,6 +2378,10 @@
 <a href="#2378" id="2378">2378</a>
 <a href="#2379" id="2379">2379</a>
 <a href="#2380" id="2380">2380</a>
+<a href="#2381" id="2381">2381</a>
+<a href="#2382" id="2382">2382</a>
+<a href="#2383" id="2383">2383</a>
+<a href="#2384" id="2384">2384</a>
 </pre></div><pre class="rust"><code><span class="comment">// Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -2505,7 +2509,7 @@
 
 </span><span class="kw">mod </span>records;
 
-<span class="kw">use </span>arrow_array::builder::PrimitiveBuilder;
+<span class="kw">use </span>arrow_array::builder::{NullBuilder, PrimitiveBuilder};
 <span class="kw">use </span>arrow_array::types::<span class="kw-2">*</span>;
 <span class="kw">use </span>arrow_array::<span class="kw-2">*</span>;
 <span class="kw">use </span>arrow_cast::parse::{parse_decimal, string_to_datetime, Parser};
@@ -3139,7 +3143,11 @@
                         null_regex,
                     )
                 }
-                DataType::Null =&gt; <span class="prelude-val">Ok</span>(Arc::new(NullArray::builder(rows.len()).finish()) <span class="kw">as </span>ArrayRef),
+                DataType::Null =&gt; <span class="prelude-val">Ok</span>(Arc::new({
+                    <span class="kw">let </span><span class="kw-2">mut </span>builder = NullBuilder::new();
+                    builder.append_nulls(rows.len());
+                    builder.finish()
+                }) <span class="kw">as </span>ArrayRef),
                 DataType::Utf8 =&gt; <span class="prelude-val">Ok</span>(Arc::new(
                     rows.iter()
                         .map(|row| {

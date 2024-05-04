@@ -192,6 +192,9 @@
 <a href="#192" id="192">192</a>
 <a href="#193" id="193">193</a>
 <a href="#194" id="194">194</a>
+<a href="#195" id="195">195</a>
+<a href="#196" id="196">196</a>
+<a href="#197" id="197">197</a>
 </pre></div><pre class="rust"><code><span class="comment">// Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -261,8 +264,11 @@
     }
 
     <span class="doccomment">/// Returns a new null array builder
-    </span><span class="kw">pub fn </span>builder(capacity: usize) -&gt; NullBuilder {
-        NullBuilder::with_capacity(capacity)
+    ///
+    /// Note that the `capacity` parameter to this function is _deprecated_. It
+    /// now does nothing, and will be removed in a future version.
+    </span><span class="kw">pub fn </span>builder(_capacity: usize) -&gt; NullBuilder {
+        NullBuilder::new()
     }
 }
 
