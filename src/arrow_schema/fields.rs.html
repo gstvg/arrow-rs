@@ -590,8 +590,6 @@
 <a href="#590" id="590">590</a>
 <a href="#591" id="591">591</a>
 <a href="#592" id="592">592</a>
-<a href="#593" id="593">593</a>
-<a href="#594" id="594">594</a>
 </pre></div><pre class="rust"><code><span class="comment">// Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -1014,8 +1012,6 @@
     }
 
     <span class="doccomment">/// Returns an iterator over the fields and type ids in this [`UnionFields`]
-    ///
-    /// Note: the iteration order is not guaranteed
     </span><span class="kw">pub fn </span>iter(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw">impl </span>Iterator&lt;Item = (i8, <span class="kw-2">&amp;</span>FieldRef)&gt; + <span class="lifetime">'_ </span>{
         <span class="self">self</span>.<span class="number">0</span>.iter().map(|(id, f)| (<span class="kw-2">*</span>id, f))
     }

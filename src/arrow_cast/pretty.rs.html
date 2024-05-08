@@ -1085,6 +1085,10 @@
 <a href="#1085" id="1085">1085</a>
 <a href="#1086" id="1086">1086</a>
 <a href="#1087" id="1087">1087</a>
+<a href="#1088" id="1088">1088</a>
+<a href="#1089" id="1089">1089</a>
+<a href="#1090" id="1090">1090</a>
+<a href="#1091" id="1091">1091</a>
 </pre></div><pre class="rust"><code><span class="comment">// Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -1229,7 +1233,7 @@
     <span class="kw">use </span>arrow_array::builder::<span class="kw-2">*</span>;
     <span class="kw">use </span>arrow_array::types::<span class="kw-2">*</span>;
     <span class="kw">use </span>arrow_array::<span class="kw-2">*</span>;
-    <span class="kw">use </span>arrow_buffer::Buffer;
+    <span class="kw">use </span>arrow_buffer::ScalarBuffer;
     <span class="kw">use </span>arrow_schema::<span class="kw-2">*</span>;
 
     <span class="kw">use </span><span class="kw">crate</span>::display::array_value_to_string;
@@ -1938,14 +1942,18 @@
 
         <span class="comment">// Can't use UnionBuilder with non-primitive types, so manually build outer UnionArray
         </span><span class="kw">let </span>a_array = Int32Array::from(<span class="macro">vec!</span>[<span class="prelude-val">None</span>, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>, <span class="prelude-val">Some</span>(<span class="number">1234</span>), <span class="prelude-val">Some</span>(<span class="number">23</span>)]);
-        <span class="kw">let </span>type_ids = Buffer::from_slice_ref([<span class="number">1_i8</span>, <span class="number">1</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>]);
+        <span class="kw">let </span>type_ids = [<span class="number">1</span>, <span class="number">1</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>].into_iter().collect::&lt;ScalarBuffer&lt;i8&gt;&gt;();
 
-        <span class="kw">let </span>children: Vec&lt;(Field, Arc&lt;<span class="kw">dyn </span>Array&gt;)&gt; = <span class="macro">vec!</span>[
-            (Field::new(<span class="string">"a"</span>, DataType::Int32, <span class="bool-val">true</span>), Arc::new(a_array)),
-            (inner_field.clone(), Arc::new(inner)),
-        ];
+        <span class="kw">let </span>children = <span class="macro">vec!</span>[Arc::new(a_array) <span class="kw">as </span>Arc&lt;<span class="kw">dyn </span>Array&gt;, Arc::new(inner)];
 
-        <span class="kw">let </span>outer = UnionArray::try_new(<span class="kw-2">&amp;</span>[<span class="number">0</span>, <span class="number">1</span>], type_ids, <span class="prelude-val">None</span>, children).unwrap();
+        <span class="kw">let </span>union_fields = [
+            (<span class="number">0</span>, Arc::new(Field::new(<span class="string">"a"</span>, DataType::Int32, <span class="bool-val">true</span>))),
+            (<span class="number">1</span>, Arc::new(inner_field.clone())),
+        ]
+        .into_iter()
+        .collect();
+
+        <span class="kw">let </span>outer = UnionArray::try_new(union_fields, type_ids, <span class="prelude-val">None</span>, children).unwrap();
 
         <span class="kw">let </span>schema = Schema::new(<span class="macro">vec!</span>[Field::new_union(
             <span class="string">"Teamsters"</span>,

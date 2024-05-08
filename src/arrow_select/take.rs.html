@@ -2408,18 +2408,15 @@
             }
         }
         DataType::Union(fields, UnionMode::Sparse) =&gt; {
-            <span class="kw">let </span><span class="kw-2">mut </span>field_type_ids = Vec::with_capacity(fields.len());
             <span class="kw">let </span><span class="kw-2">mut </span>children = Vec::with_capacity(fields.len());
             <span class="kw">let </span>values = values.as_any().downcast_ref::&lt;UnionArray&gt;().unwrap();
-            <span class="kw">let </span>type_ids = take_native(values.type_ids(), indices).into_inner();
-            <span class="kw">for </span>(type_id, field) <span class="kw">in </span>fields.iter() {
+            <span class="kw">let </span>type_ids = take_native(values.type_ids(), indices);
+            <span class="kw">for </span>(type_id, _field) <span class="kw">in </span>fields.iter() {
                 <span class="kw">let </span>values = values.child(type_id);
                 <span class="kw">let </span>values = take_impl(values, indices)<span class="question-mark">?</span>;
-                <span class="kw">let </span>field = (<span class="kw-2">**</span>field).clone();
-                children.push((field, values));
-                field_type_ids.push(type_id);
+                children.push(values);
             }
-            <span class="kw">let </span>array = UnionArray::try_new(field_type_ids.as_slice(), type_ids, <span class="prelude-val">None</span>, children)<span class="question-mark">?</span>;
+            <span class="kw">let </span>array = UnionArray::try_new(fields.clone(), type_ids, <span class="prelude-val">None</span>, children)<span class="question-mark">?</span>;
             <span class="prelude-val">Ok</span>(Arc::new(array))
         }
         t =&gt; <span class="macro">unimplemented!</span>(<span class="string">"Take not supported for data type {:?}"</span>, t)
@@ -4330,19 +4327,22 @@
             <span class="prelude-val">None</span>,
         ]);
         <span class="kw">let </span>strings = StringArray::from(<span class="macro">vec!</span>[<span class="prelude-val">Some</span>(<span class="string">"a"</span>), <span class="prelude-val">None</span>, <span class="prelude-val">Some</span>(<span class="string">"c"</span>), <span class="prelude-val">None</span>, <span class="prelude-val">Some</span>(<span class="string">"d"</span>)]);
-        <span class="kw">let </span>type_ids = Buffer::from_slice_ref(<span class="macro">vec!</span>[<span class="number">1i8</span>; <span class="number">5</span>]);
+        <span class="kw">let </span>type_ids = [<span class="number">1</span>; <span class="number">5</span>].into_iter().collect::&lt;ScalarBuffer&lt;i8&gt;&gt;();
 
-        <span class="kw">let </span>children: Vec&lt;(Field, Arc&lt;<span class="kw">dyn </span>Array&gt;)&gt; = <span class="macro">vec!</span>[
+        <span class="kw">let </span>union_fields = [
             (
-                Field::new(<span class="string">"f1"</span>, structs.data_type().clone(), <span class="bool-val">true</span>),
-                Arc::new(structs),
+                <span class="number">0</span>,
+                Arc::new(Field::new(<span class="string">"f1"</span>, structs.data_type().clone(), <span class="bool-val">true</span>)),
             ),
             (
-                Field::new(<span class="string">"f2"</span>, strings.data_type().clone(), <span class="bool-val">true</span>),
-                Arc::new(strings),
+                <span class="number">1</span>,
+                Arc::new(Field::new(<span class="string">"f2"</span>, strings.data_type().clone(), <span class="bool-val">true</span>)),
             ),
-        ];
-        <span class="kw">let </span>array = UnionArray::try_new(<span class="kw-2">&amp;</span>[<span class="number">0</span>, <span class="number">1</span>], type_ids, <span class="prelude-val">None</span>, children).unwrap();
+        ]
+        .into_iter()
+        .collect();
+        <span class="kw">let </span>children = <span class="macro">vec!</span>[Arc::new(structs) <span class="kw">as </span>Arc&lt;<span class="kw">dyn </span>Array&gt;, Arc::new(strings)];
+        <span class="kw">let </span>array = UnionArray::try_new(union_fields, type_ids, <span class="prelude-val">None</span>, children).unwrap();
 
         <span class="kw">let </span>indices = <span class="macro">vec!</span>[<span class="number">0</span>, <span class="number">3</span>, <span class="number">1</span>, <span class="number">0</span>, <span class="number">2</span>, <span class="number">4</span>];
         <span class="kw">let </span>index = UInt32Array::from(indices.clone());
