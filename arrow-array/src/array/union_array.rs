@@ -813,10 +813,11 @@ impl Array for UnionArray {
                 // TODO: bench on avx512f(feature is still unstable)
                 let gather_relative_cost = if cfg!(target_feature = "avx2") {
                     10
+                } else if cfg!(target_feature = "avx") {
+                    5
                 } else if cfg!(target_feature = "sse4.1") {
                     3
-                } else if cfg!(target_arch = "x86") || cfg!(target_arch = "x86_64") {
-                    // x86 baseline includes sse2
+                } else if cfg!(target_feature = "sse2") {
                     2
                 } else {
                     // TODO: bench on non x86
@@ -1917,6 +1918,20 @@ mod tests {
         .unwrap();
 
         assert_eq!(array.logical_nulls(), Some(NullBuffer::new_null(2)));
+
+        let array = UnionArray::try_new(
+            nullable_fields.clone(),
+            vec![1, 3].into(),
+            Some(vec![0, 0].into()),
+            vec![
+                // every children is completly null
+                Arc::new(Int8Array::new_null(1)), // smaller that parent
+                Arc::new(Int8Array::new_null(1)), // smaller that parent
+            ],
+        )
+        .unwrap();
+
+        assert_eq!(array.logical_nulls(), Some(NullBuffer::new_null(2)));
     }
 
     #[test]
@@ -2044,7 +2059,7 @@ mod tests {
     fn test_sparse_union_logical_mask_mixed_nulls_skip_fully_null() {
         // union of [{A=}, {A=}, {B=4.2}, {B=4.2}, {C=}, {C=}]
         let int_array = Int32Array::new_null(6);
-        let float_array = Float64Array::from_value(4.2, 6);
+        let float_array = Float64Array::from(vec![None, None, Some(3.2), None, None, None]);
         let str_array = StringArray::new_null(6);
         let type_ids = [1, 1, 3, 3, 4, 4].into_iter().collect::<ScalarBuffer<i8>>();
 
@@ -2058,14 +2073,14 @@ mod tests {
 
         let result = array.logical_nulls();
 
-        let expected = NullBuffer::from(vec![false, false, true, true, false, false]);
+        let expected = NullBuffer::from(vec![false, false, true, false, false, false]);
         assert_eq!(Some(expected), result);
 
         //like above, but repeated to genereate two exact bitmasks and a non empty remainder
         let len = 2 * 64 + 32;
 
         let int_array = Int32Array::new_null(len);
-        let float_array = Float64Array::from_value(4.2, len);
+        let float_array = Float64Array::from_iter([Some(3.2), None].into_iter().cycle().take(len));
         let str_array = StringArray::new_null(len);
         let type_ids = ScalarBuffer::from_iter([1, 1, 3, 3, 4, 4].into_iter().cycle().take(len));
 
@@ -2080,7 +2095,7 @@ mod tests {
         let result = array.logical_nulls();
 
         let expected = NullBuffer::from_iter(
-            [false, false, true, true, false, false]
+            [false, false, true, false, false, false]
                 .into_iter()
                 .cycle()
                 .take(len),

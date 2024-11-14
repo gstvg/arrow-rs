@@ -50,8 +50,8 @@ fn array_without_nulls() -> ArrayRef {
 }
 
 fn criterion_benchmark(c: &mut Criterion) {
-    for with_nulls in 1..12 {
-        for without_nulls in [0, 1, 10] {
+    for with_nulls in 1..6 {
+        for without_nulls in [1] {
             c.bench_function(
                 &format!("union logical nulls 4096 {with_nulls} children with nulls, {without_nulls} without nulls"),
                 |b| {
